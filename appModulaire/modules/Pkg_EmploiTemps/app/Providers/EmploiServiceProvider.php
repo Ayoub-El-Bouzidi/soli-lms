@@ -4,10 +4,9 @@ namespace Modules\Blog\app\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
-// use Modules\Blog\Models\Article;
-// use Modules\Blog\Policies\ArticlePolicy;
 
-class BlogServiceProvider extends ServiceProvider
+
+class EmploiServiceProvider extends ServiceProvider
 {
     // protected $policies = [
     //     Article::class => ArticlePolicy::class,
