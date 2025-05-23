@@ -1,0 +1,125 @@
+@startuml
+left to right direction
+class Formateur #back:AliceBlue {
+    -id: Int
+    -name: String
+    -email: String
+    -password: String
+    -created_at: timestamp
+    -updated_at: timestamp
+}
+class Responsable #back:AliceBlue {
+    -id: Int
+    -name: String
+    -email: String
+    -password: String
+    -created_at: timestamp
+    -updated_at: timestamp
+}
+class Aprennant #back:AliceBlue {
+    -id: Int
+    -name: String
+    -email: String
+    -password: String
+    -created_at: timestamp
+    -updated_at: timestamp
+}
+class Salle #back:AliceBlue{
+    -id: Int
+    -title: String
+    -content: text
+    -created_at: timestamp
+    -updated_at: timestamp
+}
+
+class planAnnuel #back:AliceBlue{
+    -id: Int
+    -name: String
+    -slug: String
+    -created_at: timestamp
+    -updated_at: timestamp
+}
+class Groupe #back:AliceBlue{
+    -id: Int
+    -name: String
+    -slug: String
+    -created_at: timestamp
+    -updated_at: timestamp
+}
+class Seance #back:AliceBlue{
+    -id: Int
+    -content: String
+    -created_at: timestamp
+    -updated_at: timestamp
+}
+class Emploie #back:AliceBlue{
+    -id: Int
+    -content: String
+    -created_at: timestamp
+    -updated_at: timestamp
+}
+class Module #back:AliceBlue{
+    -id: Int
+    -content: String
+    -created_at: timestamp
+    -updated_at: timestamp
+}
+class Competence #back:AliceBlue{
+    -id: Int
+    -content: String
+    -created_at: timestamp
+    -updated_at: timestamp
+}
+
+class Badge #back:AliceBlue{
+    -id: Int
+    -content: String
+    -created_at: timestamp
+    -updated_at: timestamp
+}
+
+class BriefProjet #back:AliceBlue{
+    -id: Int
+    -content: String
+    -created_at: timestamp
+    -updated_at: timestamp
+}
+class Evaluation #back:AliceBlue{
+    -id: Int
+    -content: String
+    -created_at: timestamp
+    -updated_at: timestamp
+}
+
+Groupe "1" -- "1" Salle
+Groupe "1" -- "*" Emploie
+Badge "1" -- "*" Module
+Badge "1" -- "*" Aprennant
+Emploie "1" -- "*" Seance
+Seance "*" -- "1" Salle
+Formateur "1" -- "*" Seance
+Seance "*" -- "1" Evaluation
+BriefProjet "*" -- "1" Module
+Module "1" -- "*" Competence
+Seance "*" -- "1" BriefProjet
+Evaluation "*" -- "1" Module
+BriefProjet "1" -- "1" Evaluation
+planAnnuel "1" -- "*" Module
+planAnnuel "1" -- "*" Formateur
+Responsable "1" -- "*" Emploie
+Formateur "1" -- "*" Module
+Module "1" -- "*" Seance
+Responsable "1" -- "*" Seance
+
+
+
+
+' Category "1" -- "*" Article : Contient
+' Article "0..*" -- "0..*" Tag : Est associé à
+' Article "1" -- "0..*" Comment : Contient
+' User "1" -- "0..*" Comment : Publie
+' User "1" -- "0..*" Article : Crée
+@enduml
+
+
+donne moi 4 packages (Empolie du temp , Cahier du texte , Plannification de formation , Gestion Des Badges)

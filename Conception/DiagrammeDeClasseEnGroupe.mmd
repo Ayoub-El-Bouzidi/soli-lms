@@ -1,0 +1,57 @@
+flowchart TB
+  %% Emploi du temps
+  subgraph EmploiDuTemps [Emploi du temps]
+    Emploie
+    Seance
+    Salle
+  end
+
+  %% Cahier du texte
+  subgraph CahierDuTexte [Cahier du texte]
+    BriefProjet
+    Competence
+    Evaluation
+  end
+
+  %% Planification de formation
+  subgraph PlanificationFormation [Planification de formation]
+    AnneeFormation
+    Groupe
+    Module
+    Formateur
+    Responsable
+    Aprennant
+  end
+
+  %% Gestion des badges
+  subgraph GestionDesBadges [Gestion des badges]
+    Badge
+  end
+
+  %% Relationships (arrows must be redefined in flowchart style)
+  Groupe --> Salle
+  Groupe --> Emploie
+  Emploie --> Seance
+  Seance --> Salle
+  Formateur --> Seance
+  Seance --> Evaluation
+  Seance --> BriefProjet
+
+  Responsable --> Emploie
+  Responsable --> Seance
+
+  BriefProjet --> Module
+  BriefProjet --> Evaluation
+
+  Module --> Competence
+  Module --> Seance
+  Module --> Formateur
+  Module --> Evaluation
+
+  AnneeFormation --> Module
+  AnneeFormation --> Formateur
+
+  Formateur --> Module
+
+  Badge --> Module
+  Badge --> Aprennant
