@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Blog\app\Providers;
+namespace Pkg_CahierText\Modules\CahierText\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;

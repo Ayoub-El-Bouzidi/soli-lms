@@ -7,6 +7,7 @@ use App\Policies\ArticlePolicy;
 use Illuminate\Support\ServiceProvider;
 use Modules\Blog\app\Providers\BlogServiceProvider;
 use Modules\Blog\app\Providers\CahierTextServiceProvider;
+use Pkg_CahierText\Modules\CahierText\Providers\CahierTextServiceProvider as PkgCahierTextServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
