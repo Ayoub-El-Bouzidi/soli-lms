@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\Blog\app\Providers;
+namespace Modules\Pkg_PlanFormation\app\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 // use Modules\Blog\Models\Article;
 // use Modules\Blog\Policies\ArticlePolicy;
 
-class BlogServiceProvider extends ServiceProvider
+class PlanServiceProvider extends ServiceProvider
 {
     // protected $policies = [
     //     Article::class => ArticlePolicy::class,
@@ -18,7 +18,7 @@ class BlogServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../../Routes/web.php');
 
         // Charger les migrations
-        $this->loadMigrationsFrom(__DIR__.'/../../Database/Migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../../Database/migrations');
 
         // Charger les vues
         $this->loadViewsFrom(__DIR__.'/../../Resources/views', 'Blog');

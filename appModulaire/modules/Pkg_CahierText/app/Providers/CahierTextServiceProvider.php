@@ -1,12 +1,13 @@
 <?php
 
-namespace Modules\Blog\app\Providers;
+namespace Modules\Pkg_CahierText\app\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
+// use Modules\Blog\Models\Article;
+// use Modules\Blog\Policies\ArticlePolicy;
 
-
-class EmploiServiceProvider extends ServiceProvider
+class CahierTextServiceProvider extends ServiceProvider
 {
     // protected $policies = [
     //     Article::class => ArticlePolicy::class,

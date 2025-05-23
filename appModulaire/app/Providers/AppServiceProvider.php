@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
-use App\Models\Article;
-use App\Policies\ArticlePolicy;
+
 use Illuminate\Support\ServiceProvider;
-use Modules\Blog\app\Providers\BlogServiceProvider;
+use Modules\Pkg_CahierText\app\Providers\CahierTextServiceProvider;
+use Modules\Pkg_Emploi\app\Providers\EmploiServiceProvider;
+use Modules\Pkg_PlanFormation\app\Providers\PlanServiceProvider;
+
+
 
 class AppServiceProvider extends ServiceProvider
 {
