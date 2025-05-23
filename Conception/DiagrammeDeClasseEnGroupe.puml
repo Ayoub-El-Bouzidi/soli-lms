@@ -32,7 +32,7 @@ class Salle #back:AliceBlue{
     -updated_at: timestamp
 }
 
-class AnneeFormation #back:AliceBlue{
+class planAnnuel #back:AliceBlue{
     -id: Int
     -name: String
     -slug: String
@@ -104,8 +104,8 @@ Module "1" -- "*" Competence
 Seance "*" -- "1" BriefProjet
 Evaluation "*" -- "1" Module
 BriefProjet "1" -- "1" Evaluation
-AnneeFormation "1" -- "*" Module
-AnneeFormation "1" -- "*" Formateur
+planAnnuel "1" -- "*" Module
+planAnnuel "1" -- "*" Formateur
 Responsable "1" -- "*" Emploie
 Formateur "1" -- "*" Module
 Module "1" -- "*" Seance

@@ -1,17 +1,19 @@
-classDiagram
-  %% Packages
+flowchart TB
+  %% Emploi du temps
   subgraph EmploiDuTemps [Emploi du temps]
     Emploie
     Seance
     Salle
   end
 
+  %% Cahier du texte
   subgraph CahierDuTexte [Cahier du texte]
     BriefProjet
     Competence
     Evaluation
   end
 
+  %% Planification de formation
   subgraph PlanificationFormation [Planification de formation]
     AnneeFormation
     Groupe
@@ -21,36 +23,35 @@ classDiagram
     Aprennant
   end
 
+  %% Gestion des badges
   subgraph GestionDesBadges [Gestion des badges]
     Badge
-    %% Module and Aprennant are reused from PlanificationFormation
   end
 
-  %% Relationships
-  Groupe "1" -- "1" Salle
-  Groupe "1" -- "*" Emploie
+  %% Relationships (arrows must be redefined in flowchart style)
+  Groupe --> Salle
+  Groupe --> Emploie
+  Emploie --> Seance
+  Seance --> Salle
+  Formateur --> Seance
+  Seance --> Evaluation
+  Seance --> BriefProjet
 
-  Emploie "1" -- "*" Seance
-  Seance "*" -- "1" Salle
-  Formateur "1" -- "*" Seance
-  Seance "*" -- "1" Evaluation
-  Seance "*" -- "1" BriefProjet
+  Responsable --> Emploie
+  Responsable --> Seance
 
-  Responsable "1" -- "*" Emploie
-  Responsable "1" -- "*" Seance
+  BriefProjet --> Module
+  BriefProjet --> Evaluation
 
-  BriefProjet "*" -- "1" Module
-  BriefProjet "1" -- "1" Evaluation
+  Module --> Competence
+  Module --> Seance
+  Module --> Formateur
+  Module --> Evaluation
 
-  Module "1" -- "*" Competence
-  Module "1" -- "*" Seance
-  Module "1" -- "*" Formateur
-  Module "1" -- "*" Evaluation
+  AnneeFormation --> Module
+  AnneeFormation --> Formateur
 
-  AnneeFormation "1" -- "*" Module
-  AnneeFormation "1" -- "*" Formateur
+  Formateur --> Module
 
-  Formateur "1" -- "*" Module
-
-  Badge "1" -- "*" Module
-  Badge "1" -- "*" Aprennant
+  Badge --> Module
+  Badge --> Aprennant

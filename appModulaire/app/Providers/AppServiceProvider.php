@@ -19,7 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->register(BlogServiceProvider::class);
+        $this->app->register(CahierTextServiceProvider::class);
+        $this->app->register(EmploiServiceProvider::class);
     }
 
     /**
