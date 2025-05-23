@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Policies\ArticlePolicy;
 use Illuminate\Support\ServiceProvider;
 use Modules\Blog\app\Providers\BlogServiceProvider;
+use Modules\Blog\app\Providers\CahierTextServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
