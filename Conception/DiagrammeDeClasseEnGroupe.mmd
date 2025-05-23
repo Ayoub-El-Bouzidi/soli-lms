@@ -1,0 +1,56 @@
+classDiagram
+  %% Packages
+  subgraph EmploiDuTemps [Emploi du temps]
+    Emploie
+    Seance
+    Salle
+  end
+
+  subgraph CahierDuTexte [Cahier du texte]
+    BriefProjet
+    Competence
+    Evaluation
+  end
+
+  subgraph PlanificationFormation [Planification de formation]
+    AnneeFormation
+    Groupe
+    Module
+    Formateur
+    Responsable
+    Aprennant
+  end
+
+  subgraph GestionDesBadges [Gestion des badges]
+    Badge
+    %% Module and Aprennant are reused from PlanificationFormation
+  end
+
+  %% Relationships
+  Groupe "1" -- "1" Salle
+  Groupe "1" -- "*" Emploie
+
+  Emploie "1" -- "*" Seance
+  Seance "*" -- "1" Salle
+  Formateur "1" -- "*" Seance
+  Seance "*" -- "1" Evaluation
+  Seance "*" -- "1" BriefProjet
+
+  Responsable "1" -- "*" Emploie
+  Responsable "1" -- "*" Seance
+
+  BriefProjet "*" -- "1" Module
+  BriefProjet "1" -- "1" Evaluation
+
+  Module "1" -- "*" Competence
+  Module "1" -- "*" Seance
+  Module "1" -- "*" Formateur
+  Module "1" -- "*" Evaluation
+
+  AnneeFormation "1" -- "*" Module
+  AnneeFormation "1" -- "*" Formateur
+
+  Formateur "1" -- "*" Module
+
+  Badge "1" -- "*" Module
+  Badge "1" -- "*" Aprennant
