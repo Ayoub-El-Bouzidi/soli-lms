@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('apprenants', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
-            $table->foreignId('badge_id')->constrained()->onDelete('cascade');
-            $table->foreignId('module_id')->constrained()->onDelete('cascade');
+            //$table->foreignId('badge_id')->constrained()->onDelete('cascade');
+            //$table->foreignId('module_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

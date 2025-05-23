@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('badges', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
-            $table->foreignId('competence_id')->constrained()->onDelete('cascade');
-            $table->foreignId('module_id')->constrained()->onDelete('cascade');
+            //$table->foreignId('competence_id')->constrained()->onDelete('cascade');
+            //$table->foreignId('module_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
