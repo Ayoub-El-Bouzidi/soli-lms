@@ -4,9 +4,11 @@ namespace App\Providers;
 
 
 use Illuminate\Support\ServiceProvider;
+
 use Modules\Pkg_CahierText\app\Providers\CahierTextServiceProvider;
 use Modules\Pkg_Emploi\app\Providers\EmploiServiceProvider;
 use Modules\Pkg_PlanFormation\app\Providers\PlanServiceProvider;
+
 
 
 
