@@ -28,8 +28,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "Modules\\": "modules/",
-            "Modules\\PlanFormation\\": "modules/PlanFormation/"
+            "Modules\\": "modules/"
         }
     },
     "autoload-dev": {
