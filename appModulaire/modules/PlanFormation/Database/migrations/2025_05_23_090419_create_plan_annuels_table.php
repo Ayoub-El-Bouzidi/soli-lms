@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('article_tag', function (Blueprint $table) {
+        Schema::create('plan_annuels', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tag_id')->constrained('tags')->onDelete('cascade');
-            $table->foreignId('article_id')->constrained('articles')->onDelete('cascade');
+            $table->date('date_debut');
+            $table->date('date_fin');
+            $table->string('filiere');
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('article_tag');
+        Schema::dropIfExists('plan_annuels');
     }
 };
