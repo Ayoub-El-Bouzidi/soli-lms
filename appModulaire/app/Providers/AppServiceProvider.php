@@ -21,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->register(BlogServiceProvider::class);
         $this->app->register(EmploiServiceProvider::class);
+        $this->app->register(PlanServiceProvider::class);
+
     }
 
     /**

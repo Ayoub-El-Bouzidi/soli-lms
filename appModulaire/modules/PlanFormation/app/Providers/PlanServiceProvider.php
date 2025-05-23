@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 // use Modules\Blog\Models\Article;
 // use Modules\Blog\Policies\ArticlePolicy;
 
-class BlogServiceProvider extends ServiceProvider
+class PlanServiceProvider extends ServiceProvider
 {
     // protected $policies = [
     //     Article::class => ArticlePolicy::class,
