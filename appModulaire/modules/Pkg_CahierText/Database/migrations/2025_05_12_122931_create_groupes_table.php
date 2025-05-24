@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('modules', function (Blueprint $table) {
-            $table->id('module_id');
-            $table->string('nom');
-            $table->integer('masse_horaire_totale');
+        Schema::create('groupes', function (Blueprint $table) {
+            $table->id('groupe_id');
+            $table->string('name')->unique();
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('modules');
+        Schema::dropIfExists('groupes');
     }
 };

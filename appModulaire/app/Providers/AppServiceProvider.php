@@ -2,12 +2,15 @@
 
 namespace App\Providers;
 
-use App\Models\Article;
-use App\Policies\ArticlePolicy;
+
 use Illuminate\Support\ServiceProvider;
-use Modules\Blog\app\Providers\BlogServiceProvider;
-use Modules\Blog\app\Providers\CahierTextServiceProvider;
-use Pkg_CahierText\Modules\CahierText\Providers\CahierTextServiceProvider as PkgCahierTextServiceProvider;
+
+use Modules\Pkg_CahierText\app\Providers\CahierTextServiceProvider;
+use Modules\Pkg_Emploi\app\Providers\EmploiServiceProvider;
+use Modules\Pkg_PlanFormation\app\Providers\PlanServiceProvider;
+
+
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->register(CahierTextServiceProvider::class);
         $this->app->register(EmploiServiceProvider::class);
+        $this->app->register(PlanServiceProvider::class);
+
     }
 
     /**
