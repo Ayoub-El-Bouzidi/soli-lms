@@ -67,10 +67,10 @@ class UserController extends Controller
         if ($request->role) {
             $user->syncRoles($request->role);
         }
-    
+
         // Sync Permissions
         $user->syncPermissions($request->permissions ?? []);
-    
+
         return redirect()->route('user.index')->with('success', 'User updated successfully!');
     }
 
