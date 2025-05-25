@@ -23,7 +23,7 @@ class CahierTextServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../../Database/Migrations');
 
         // Charger les vues
-        $this->loadViewsFrom(__DIR__.'/../../Resources/views', 'Blog');
+        $this->loadViewsFrom(__DIR__.'/../../Resources/views', 'Pkg_CahierText');
 
         // Publier les assets si nécessaire
         $this->publishes([
