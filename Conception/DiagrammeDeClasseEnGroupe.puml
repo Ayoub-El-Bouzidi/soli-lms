@@ -120,6 +120,3 @@ Responsable "1" -- "*" Seance
 ' User "1" -- "0..*" Comment : Publie
 ' User "1" -- "0..*" Article : Crée
 @enduml
-
-
-donne moi 4 packages (Empolie du temp , Cahier du texte , Plannification de formation , Gestion Des Badges)
