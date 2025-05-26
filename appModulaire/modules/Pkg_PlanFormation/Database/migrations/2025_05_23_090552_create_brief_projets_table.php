@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('brief_projets', function (Blueprint $table) {
-            $table->id('brief_projet_id');
+            $table->id();
             $table->string('titre');
             $table->text('description')->nullable();
             $table->string('statut');
-            $table->foreignId('module_id')->constrained('modules', 'module_id')->onDelete('cascade');
+            $table->foreignId('module_id')->constrained('modules')->onDelete('cascade');
             $table->timestamps();
         });
     }

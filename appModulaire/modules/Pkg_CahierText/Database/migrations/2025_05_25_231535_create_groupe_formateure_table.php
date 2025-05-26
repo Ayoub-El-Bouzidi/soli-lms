@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('groupes', function (Blueprint $table) {
-            $table->id('groupe_id');
-            $table->string('name')->unique();
-            $table->string('slug')->unique();
+        Schema::create('groupe_formateure', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('groupe_id')->constrained('groupes')->onDelete('cascade');
+            $table->foreignId('formateur_id')->constrained('formateurs')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('groupes');
+        Schema::dropIfExists('groupe_formateure');
     }
 };
