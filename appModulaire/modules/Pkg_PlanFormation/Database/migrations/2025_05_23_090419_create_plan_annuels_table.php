@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('plan_annuels', function (Blueprint $table) {
-            $table->id('plan_annuel_id');
+            $table->id();
             $table->date('date_debut');
             $table->date('date_fin');
             $table->string('filiere');
