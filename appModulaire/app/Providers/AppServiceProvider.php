@@ -9,8 +9,10 @@ use Modules\Pkg_CahierText\app\Providers\CahierTextServiceProvider;
 use Modules\Pkg_Emploi\app\Providers\EmploiServiceProvider;
 use Modules\Pkg_PlanFormation\app\Providers\PlanServiceProvider;
 
-
-
+// Add the correct imports for the repositories
+use Modules\Pkg_CahierText\Repositories\ModuleRepository;
+use Modules\Pkg_CahierText\Repositories\SeanceRepository;
+use Modules\Pkg_CahierText\Repositories\GroupeRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,7 +29,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(CahierTextServiceProvider::class);
         $this->app->register(EmploiServiceProvider::class);
         $this->app->register(PlanServiceProvider::class);
-
+        $this->app->bind(ModuleRepository::class);
+        $this->app->bind(SeanceRepository::class);
+        $this->app->bind(GroupeRepository::class);
     }
 
     /**
