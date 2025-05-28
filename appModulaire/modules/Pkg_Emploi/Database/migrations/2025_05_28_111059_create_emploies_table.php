@@ -9,14 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+       public function up(): void
     {
-        Schema::create('brief_projets', function (Blueprint $table) {
+        Schema::create('emploies', function (Blueprint $table) {
             $table->id();
             $table->string('titre');
-            $table->text('description')->nullable();
-            $table->string('statut');
-            $table->foreignId('module_id')->constrained('modules')->onDelete('cascade');
+            $table->string('statut')->default('active');
+            $table->date('date_debut');
+            $table->date('date_fin');
+            $table->foreignId('groupe_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('brief_projets');
+        Schema::dropIfExists('emploies');
     }
 };

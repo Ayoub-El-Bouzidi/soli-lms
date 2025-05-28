@@ -28,7 +28,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->register(CahierTextServiceProvider::class);
         $this->app->register(EmploiServiceProvider::class);
-        $this->app->register(PlanServiceProvider::class);
         $this->app->bind(ModuleRepository::class);
         $this->app->bind(SeanceRepository::class);
         $this->app->bind(GroupeRepository::class);
