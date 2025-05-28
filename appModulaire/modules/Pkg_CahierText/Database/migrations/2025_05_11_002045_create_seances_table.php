@@ -15,13 +15,7 @@ return new class extends Migration
     {
         Schema::create('seances', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->time('heure_debut');
-            $table->time('heure_fin');
-            $table->integer('duree');
             $table->string('etat_validation');
-            $table->foreignId('formateur_id')->constrained('formateurs')->onDelete('cascade'); // à ajouter
-            $table->foreignId('module_id')->constrained('modules')->onDelete('cascade');
             $table->timestamps();
         });
     }
