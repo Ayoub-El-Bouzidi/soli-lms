@@ -1,9 +1,9 @@
 <?php
 namespace Modules\Pkg_CahierText\Repositories;
+use Modules\Pkg_CahierText\Interfaces\ModuleRepositoryInterface;
 use Modules\Pkg_CahierText\Models\Module;
 
-
-class ModuleRepository
+class ModuleRepository implements ModuleRepositoryInterface
 {
     public function getAllModules()
     {

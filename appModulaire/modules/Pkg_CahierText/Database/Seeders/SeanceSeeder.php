@@ -7,7 +7,6 @@ use Illuminate\Database\Seeder;
 use Modules\Pkg_CahierText\Models\Formateur;
 use Modules\Pkg_CahierText\Models\Seance;
 use Modules\Pkg_CahierText\Models\Module;
-use App\Models\Session;
 
 class SeanceSeeder extends Seeder
 {

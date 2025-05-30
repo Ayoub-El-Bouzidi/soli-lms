@@ -16,6 +16,8 @@ return new class extends Migration
             $table->date("date");
             $table->dateTime('heur_debut');
             $table->dateTime('heur_fin');
+            $table->integer('duree');
+            $table->string('jours');
             $table->foreignId('module_id')->constrained()->onDelete('cascade');
             $table->foreignId('formateur_id')->constrained()->onDelete('cascade');
             $table->foreignId('salle_id')->constrained()->onDelete('cascade');

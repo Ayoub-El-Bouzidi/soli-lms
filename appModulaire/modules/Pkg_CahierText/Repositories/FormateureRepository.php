@@ -1,8 +1,9 @@
 <?php
 namespace Modules\Pkg_CahierText\Repositories;
+use Modules\Pkg_CahierText\Interfaces\FormateureRepositoryInterface;
 use Modules\Pkg_CahierText\Models\Formateur;
 
-class FormateureRepository
+class FormateureRepository implements FormateureRepositoryInterface
 {
     public function getAllFormateurs()
     {
