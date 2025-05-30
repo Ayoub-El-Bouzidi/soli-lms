@@ -1,8 +1,9 @@
 <?php
 namespace Modules\Pkg_CahierText\Repositories;
+use Modules\Pkg_CahierText\Interfaces\SeanceRepositoryInterface;
 use Modules\Pkg_CahierText\Models\Seance;
 
-class SeanceRepository
+class SeanceRepository implements SeanceRepositoryInterface
 {
     public function getAllSeances()
     {

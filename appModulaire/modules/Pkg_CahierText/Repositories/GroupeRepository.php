@@ -1,10 +1,9 @@
 <?php
 namespace Modules\Pkg_CahierText\Repositories;
+
+use Modules\Pkg_CahierText\Interfaces\GroupeRepositoryInterface;
 use Modules\Pkg_CahierText\Models\Groupe;
-
-
-use App\Interfaces\GroupeRepositoryInterface;
-class GroupeRepository
+class GroupeRepository implements GroupeRepositoryInterface
 {
 
     public function getAllGroupes()

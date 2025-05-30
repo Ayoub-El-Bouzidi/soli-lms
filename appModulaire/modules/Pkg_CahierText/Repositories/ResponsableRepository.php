@@ -1,12 +1,11 @@
 <?php
 namespace Modules\Pkg_CahierText\Repositories;
+
+
+use Modules\Pkg_CahierText\Interfaces\ResponsableRepositoryInterface;
 use Modules\Pkg_CahierText\Models\Responsable;
 
-
-
-use App\Interfaces\ResponsableRepositoryInterface;
-
-class ResponsableRepository
+class ResponsableRepository implements ResponsableRepositoryInterface
 {
 
     public function getAllResponsables()
