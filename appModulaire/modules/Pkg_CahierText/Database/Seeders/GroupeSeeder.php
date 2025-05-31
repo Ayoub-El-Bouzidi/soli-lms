@@ -15,11 +15,16 @@ class GroupeSeeder extends Seeder
      */
     public function run(): void
     {
-        Groupe::create([
-            'nom' => 'Groupe A',
-        ]);
-        Groupe::create([
-            'nom' => 'Groupe B'
-        ]);
+        $groups = [
+               ['nom' => 'DM101'], // Second year
+               ['nom' => 'DW101'], // First year
+               ['nom' => 'DW102'],
+               ['nom' => 'DW103'],
+               ['nom' => 'DW104'],
+           ];
+
+           foreach ($groups as $group) {
+               Groupe::create($group);
+           }
     }
 }

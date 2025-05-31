@@ -13,11 +13,9 @@ return new class extends Migration
     {
         Schema::create('seance_emploies', function (Blueprint $table) {
             $table->id();
-            $table->date("date");
-            $table->dateTime('heur_debut');
-            $table->dateTime('heur_fin');
-            $table->integer('duree');
-            $table->string('jours');
+            $table->time('heur_debut');
+            $table->time('heur_fin');
+            $table->enum('jours', ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi']);
             $table->foreignId('module_id')->constrained()->onDelete('cascade');
             $table->foreignId('formateur_id')->constrained()->onDelete('cascade');
             $table->foreignId('salle_id')->constrained()->onDelete('cascade');

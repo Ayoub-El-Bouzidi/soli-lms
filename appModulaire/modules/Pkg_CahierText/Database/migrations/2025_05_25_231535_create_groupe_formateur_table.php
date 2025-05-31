@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('groupe_formateure', function (Blueprint $table) {
+        Schema::create('groupe_formateur', function (Blueprint $table) {
             $table->id();
             $table->foreignId('groupe_id')->constrained('groupes')->onDelete('cascade');
             $table->foreignId('formateur_id')->constrained('formateurs')->onDelete('cascade');
