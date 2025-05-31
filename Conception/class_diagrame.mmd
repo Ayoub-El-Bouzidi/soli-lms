@@ -1,152 +1,86 @@
- classDiagram
-    direction LR
+classDiagram
 
-    namespace pkg_Emploi{
-        class Salle
-        class Emploie
-        class Groupe
-        class Seance
-    }
-    namespace pkg_Cahier_du_text{
-        class Module
-        class Formateur
-        class Groupe
-        class Responsable
-    }
-     namespace pkg_Badges{
-        class Badge
-        class Aprennant
-    }
-     namespace pkg_Planification{
-        class AnneeFormation
-        class Competence
-        class BriefProjet
-        class Evaluation
-    }
+namespace Pkg_Emploie{
+  class Emploie
+  class SeanceEpmloie
+  class Salle
+}
+namespace Pkg_Chier_Text{
+  class Groupe
+  class Formateur
+  class Responsabble
+  class Module
+  class Seance
+}
 
-    
-        class Formateur {
-            -id: Int
-            -name: String
-            -email: String
-            -password: String
-            -created_at: timestamp
-            -updated_at: timestamp
-        }
-        class Responsable {
-            -id: Int
-            -name: String
-            -email: String
-            -password: String
-            -created_at: timestamp
-            -updated_at: timestamp
-        }
-        class Salle {
-            -id: Int
-            -title: String
-            -content: text
-            -created_at: timestamp
-            -updated_at: timestamp
-        }
-        class Emploie {
-            -id: Int
-            -content: String
-            -created_at: timestamp
-            -updated_at: timestamp
-        }
-        class Seance {
-            -id: Int
-            -content: String
-            -created_at: timestamp
-            -updated_at: timestamp
-        }
-    
+class Groupe {
+  id : Integer
+  nom : String
+}
 
-    
-        class Seance {
-            -id: Int
-            -content: String
-            -created_at: timestamp
-            -updated_at: timestamp
-        }
-        class BriefProjet {
-            -id: Int
-            -content: String
-            -created_at: timestamp
-            -updated_at: timestamp
-        }
-        class Evaluation {
-            -id: Int
-            -content: String
-            -created_at: timestamp
-            -updated_at: timestamp
-        }
-    
+class Module {
+  id : Integer
+  nom : String
+  masse_horaire : int
+  
+}
 
-    
-        class AnneeFormation {
-            -id: Int
-            -name: String
-            -slug: String
-            -created_at: timestamp
-            -updated_at: timestamp
-        }
-        class Groupe {
-            -id: Int
-            -name: String
-            -slug: String
-            -created_at: timestamp
-            -updated_at: timestamp
-        }
-        class Module {
-            -id: Int
-            -content: String
-            -created_at: timestamp
-            -updated_at: timestamp
-        }
-        class Competence {
-            -id: Int
-            -content: String
-            -created_at: timestamp
-            -updated_at: timestamp
-        }
-    
 
-    
-        class Badge {
-            -id: Int
-            -content: String
-            -created_at: timestamp
-            -updated_at: timestamp
-        }
-        class Module {
-            -id: Int
-            -content: String
-            -created_at: timestamp
-            -updated_at: timestamp
-        }
-       
-            
-        
-    
 
-    Relationships
-    Groupe "1" -- "1" Salle
-    Groupe "1" -- "*" Emploie
-    Badge "1" -- "*" Module
-    Badge "1" -- "*" Aprennant
-    Emploie "1" -- "*" Seance
-    Seance "*" -- "1" Salle
-    Formateur "1" -- "*" Seance
-    Seance "*" -- "1" Evaluation
-    BriefProjet "*" -- "1" Module
-    Module "1" -- "*" Competence
-    Seance "*" -- "1" BriefProjet
-    
-    BriefProjet "1" -- "1" Evaluation
-    AnneeFormation "1" -- "*" Module
-    AnneeFormation "1" -- "*" Formateur
-    Responsable "1" -- "*" Emploie
-    Formateur "1" -- "*" Module
-    Module "1" -- "*" Seance
-    Responsable "1" -- "*" Seance
+class Emploie {
+  id : Integer
+  date_debut : date
+  date_fin : date
+}
+
+
+
+class Formateur {
+  id : Integer
+  nom : String
+  prenom : String
+  email : String
+  mot_de_pass : String
+}
+
+
+class Responsable {
+  id : Integer
+  nom : String
+  prenom : String
+  email : String
+  mot_de_pass : String
+}
+
+
+
+class Seance{
+  id : Integer
+  etat_validation : String
+}
+
+class SeanceEpmloie{
+  id : Integer
+  heur_debut : time
+  heur_fin : time
+
+}
+
+class Salle{
+ id : Integer
+ nom : string
+}
+
+
+
+Seance "*" -- "1" SeanceEpmloie
+SeanceEpmloie "*" -- "1" Module
+SeanceEpmloie "1" -- "*" Formateur
+Groupe "*" -- "*" Formateur
+Responsable "1" -- "*" emploie
+SeanceEpmloie "*" -- "1" Salle
+Groupe "1" -- "*" Emploie
+SeanceEpmloie "*" -- "1" Emploie
+
+
+

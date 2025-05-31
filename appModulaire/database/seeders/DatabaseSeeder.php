@@ -2,37 +2,46 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Modules\Blog\Database\Seeders\DatabaseSeederBlog;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Modules\Pkg_CahierText\Database\Seeders\DatabaseSeederCahieText;
 use Illuminate\Database\Seeder;
+use Modules\Pkg_CahierText\Database\Seeders\FormateurSeeder;
+use Modules\Pkg_CahierText\Database\Seeders\GroupeFormateurSeeder;
+use Modules\Pkg_CahierText\Database\Seeders\GroupeModuleSeeder;
+use Modules\Pkg_CahierText\Database\Seeders\GroupeSeeder;
+use Modules\Pkg_CahierText\Database\Seeders\ModuleSeeder;
+use Modules\Pkg_CahierText\Database\Seeders\ResponsableSeeder;
+use Modules\Pkg_CahierText\Database\Seeders\SeanceSeeder;
+use Modules\Pkg_Emploi\Database\Seeders\EmploiSeeder;
+use Modules\Pkg_Emploi\Database\Seeders\SalleSeeder;
+use Modules\Pkg_Emploi\Database\Seeders\SeanceEmploieSeeder;
 
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * Run the database seeds.
      */
     public function run(): void
     {
-        // Seed the default user
-        if (User::where('email', 'test@example.com')->doesntExist()) {
-            User::create([
-                'name' => 'Test User',
-                'email' => 'test@example.com',
-                'password' => bcrypt('password'), // Or any password you want
-            ]);
-        }
-
-        $user = User::create([
-            'name'=>'admin',
-            'email'=>'admin@gmail.com',
-            'password'=>bcrypt('admin')
-        ]);
-        // Call other seeders
         $this->call([
-            RolePermissionSeeder::class, // Add Role & permission
-            DatabaseSeederBlog::class
+            // DatabaseSeederCahieText::class,
+            // DatabaseSeederEmploi::class,
+            ResponsableSeeder::class,
+            FormateurSeeder::class,
+            GroupeSeeder::class,
+            // FormateurSeeder::class,
+            GroupeFormateurSeeder::class,
+            ModuleSeeder::class,
+            GroupeModuleSeeder::class,
+            SalleSeeder::class,
+            EmploiSeeder::class,
+            SeanceEmploieSeeder::class,
+            SeanceSeeder::class,
+
+            // Add other seeders here if needed
         ]);
-        $user->assignRole('admin');
+
+        // You can also call other seeders directly if needed
+        // $this->call(OtherSeeder::class);
     }
 }
-
