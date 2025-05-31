@@ -1,5 +1,6 @@
 <?php
-namespace Modules\Pkg_CahierText\Models;
+
+namespace Modules\Pkg_Emploi\Models;
 
 use Modules\Pkg_CahierText\Models\Formateur;
 use Modules\Pkg_CahierText\Models\Module;

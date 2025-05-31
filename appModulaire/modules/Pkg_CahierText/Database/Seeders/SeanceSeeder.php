@@ -5,7 +5,7 @@ namespace Modules\Pkg_CahierText\Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Modules\Pkg_CahierText\Models\Formateur;
-use Modules\Pkg_CahierText\Models\Seance;
+use Modules\Pkg_Emploi\Models\Seance;
 use Modules\Pkg_CahierText\Models\Module;
 
 class SeanceSeeder extends Seeder
@@ -26,6 +26,7 @@ class SeanceSeeder extends Seeder
             'formateur_id' => $formateur->id,
             'module_id' => $module->id,
             'jours' => 'lundi',         // valeur pour le champ enum
+            'seance_emploi_id' => 1, // Assurez-vous que cette valeur existe dans la table seance_emploies
         ]);
     }
 }
