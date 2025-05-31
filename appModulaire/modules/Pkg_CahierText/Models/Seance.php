@@ -12,25 +12,26 @@ class Seance extends Model
     use HasFactory;
 
     protected $fillable = [
-        'date',
-        'heure_debut',
-        'heure_fin',
-        'duree',
+        // 'date',
+        // 'heure_debut',
+        // 'heure_fin',
+        // 'duree',
         'etat_validation',
-        'formateur_id',
-        'module_id',
-        'responsable_id',
+        'seance_emploi_id',
+        // 'formateur_id',
+        // 'module_id',
+        // 'responsable_id',
     ];
 
-    public function formateur()
-    {
-        return $this->belongsTo(Formateur::class);
-    }
+    // public function formateur()
+    // {
+    //     return $this->belongsTo(Formateur::class);
+    // }
 
-    public function module()
-    {
-        return $this->belongsTo(Module::class);
-    }
+    // public function module()
+    // {
+    //     return $this->belongsTo(Module::class);
+    // }
 
     public function responsable()
     {

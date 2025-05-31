@@ -2,6 +2,7 @@
 
 namespace Modules\Pkg_CahierText\Models;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Pkg_Emploi\Models\SeanceEmploi;
 
 class Module extends Model
 {
@@ -13,8 +14,11 @@ class Module extends Model
     /**
      * Get the sessions for this module.
      */
-    public function seance()
+    public function seance_emploies()
     {
-        return $this->hasMany(Seance::class);
+        return $this->hasMany(SeanceEmploi::class);
+    }
+    public function groupes(){
+        return $this->belongsToMany(Groupe::class, 'groupe_module', 'groupe_id', 'module_id');
     }
 }

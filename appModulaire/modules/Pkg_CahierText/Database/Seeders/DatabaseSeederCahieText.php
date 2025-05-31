@@ -17,7 +17,7 @@ class DatabaseSeederCahieText extends Seeder
             FormateurSeeder::class,
             ResponsableSeeder::class,
             ModuleSeeder::class,
-            SeanceSeeder::class,
+            // SeanceSeeder::class,
             GroupeSeeder::class,
         ]);
     }

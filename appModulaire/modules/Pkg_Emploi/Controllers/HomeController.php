@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Blog\Controllers;
+namespace Modules\Pkg_Emploi\Controllers;
 
 
 use Modules\Core\Controllers\Controller;
@@ -19,11 +19,11 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct(ArticleService $articleService, CategoryService $categoryService)
+    public function __construct(/* ArticleService $articleService, CategoryService $categoryService */)
     {
-        $this->middleware('auth');
-        $this->articleService = $articleService;
-        $this->categoryService = $categoryService;
+        // $this->middleware('auth');
+        // $this->articleService = $articleService;
+        // $this->categoryService = $categoryService;
     }
 
     /**
@@ -31,29 +31,10 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+
     public function publicIndex(Request $request)
     {
-        $search = $request->query('search'); // Get the search query parameter
-        $category = $request->query('category'); // Get the category query parameter
-
-        $categories = $this->categoryService->getAll(); // Fetch all categories for the filter dropdown
-
-        // Base query for articles
-        $articlesQuery = Article::query();
-
-        // Apply search filter
-        if ($search) {
-            $articlesQuery->where('title', 'like', '%' . $search . '%');
-        }
-
-        // Apply category filter
-        if ($category) {
-            $articlesQuery->where('category_id', $category);
-        }
-
-        $articles = $articlesQuery->paginate(6); // Paginate the results
-
-        return view('Blog::public.articles.index', compact('articles', 'categories', 'search', 'category'));
+        
     }
 
     /**

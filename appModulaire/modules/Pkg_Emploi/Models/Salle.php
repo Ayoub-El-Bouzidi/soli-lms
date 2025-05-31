@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Pkg_Emploi\Database\Seeders;
+namespace Modules\Pkg_Emploi\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,16 +8,15 @@ class Salle extends Model
 {
     protected $fillable = [
         'nom',
-        'capacite',
-        'equipements',
-        'disponibilite',
     ];
 
     /**
      * Get the sessions associated with the salle.
      */
-    public function seances()
+    public function seanceemploies()
     {
-        return $this->hasMany('Modules\Pkg_CahierText\Models\Seance', 'salle_id');
+        return $this->hasMany(SeanceEmploi::class);
     }
+
+
 }

@@ -5,8 +5,10 @@ namespace Modules\Pkg_CahierText\Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Modules\Pkg_CahierText\Models\Formateur;
-use Modules\Pkg_Emploi\Models\Seance;
+use Modules\Pkg_CahierText\Models\Seance;
 use Modules\Pkg_CahierText\Models\Module;
+use Faker\Factory as Faker;
+use Modules\Pkg_Emploi\Models\SeanceEmploi;
 
 class SeanceSeeder extends Seeder
 {
@@ -15,18 +17,14 @@ class SeanceSeeder extends Seeder
      */
     public function run(): void
     {
-        $formateur = Formateur::first();
-        $module = Module::first();
+        $faker = Faker::create();
+        $seanceEmploies = SeanceEmploi::pluck('id')->toArray();
 
-        Seance::create([
-            'date' => now()->toDateString(),
-            'heure_debut' => '10:00:00',
-            'heure_fin' => '12:00:00',
-            'duree' => 120,
-            'formateur_id' => $formateur->id,
-            'module_id' => $module->id,
-            'jours' => 'lundi',         // valeur pour le champ enum
-            'seance_emploi_id' => 1, // Assurez-vous que cette valeur existe dans la table seance_emploies
-        ]);
+        for ($i = 0; $i < 50; $i++) {
+            Seance::create([
+                'etat_validation' => $faker->randomElement(['pending', 'approved', 'rejected']),
+                'seance_emploie_id' => $faker->randomElement($seanceEmploies),
+            ]);
+        }
     }
 }

@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('emploies', function (Blueprint $table) {
             $table->id();
-            $table->string('titre');
-            $table->string('statut')->default('active');
+            // $table->string('statut')->default('active');
             $table->date('date_debut');
             $table->date('date_fin');
             $table->foreignId('groupe_id')->constrained()->onDelete('cascade');

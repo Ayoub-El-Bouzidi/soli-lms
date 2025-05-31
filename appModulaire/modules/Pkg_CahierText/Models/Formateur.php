@@ -19,4 +19,8 @@ class Formateur extends Model
     {
         return $this->hasMany(Seance::class);
     }
+    public function groupes()
+    {
+        return $this->belongsToMany(Groupe::class, 'groupe_formateur', 'formateur_id', 'groupe_id');
+    }
 }
