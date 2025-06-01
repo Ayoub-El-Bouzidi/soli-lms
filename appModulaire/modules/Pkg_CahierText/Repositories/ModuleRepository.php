@@ -7,7 +7,7 @@ class ModuleRepository implements ModuleRepositoryInterface
 {
     public function getAllModules()
     {
-        return Module::all()->count();
+        return Module::with('seances', 'groupes')->get();
     }
 
     public function getModuleById($id)

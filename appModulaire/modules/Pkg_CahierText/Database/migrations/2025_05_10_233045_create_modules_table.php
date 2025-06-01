@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
             $table->integer('masse_horaire');
+            $table->integer('heures_terminees');
+            $table->integer('heures_restees');
+            $table->string('etat_validation')->default('en cours'); // 'en cours', 'terminé', 'annulé'
             $table->timestamps();
         });
     }
