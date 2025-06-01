@@ -24,36 +24,38 @@ class DashboardController extends Controller
         $this->groupeRepository = $groupeRepository;
     }
 
-   public function index()
+public function index()
 {
-    // Count modules
-    $modulesTermines = \Modules\Pkg_CahierText\Models\Module::where('masse_horaire_totale', 0)->count();
-    $modulesRestants = \Modules\Pkg_CahierText\Models\Module::where('masse_horaire_totale', '>', 0)->count();
+    // Compter les modules terminés et restants
+    $modulesTermines = \Modules\Pkg_CahierText\Models\Module::where('heures_restees', 0)->count();
+    $modulesRestants = \Modules\Pkg_CahierText\Models\Module::where('heures_restees', '>', 0)->count();
 
-    // Counts
+    // Compter les séances et les groupes
     $seancesCount = $this->seanceRepository->getAllSeances()->count();
     $groupesCount = $this->groupeRepository->getAllGroupes()->count();
 
-    // Contenu des modules
-    $modules = $this->moduleRepository->getAllModules(); // Assumes method exists
+    // Récupérer tous les modules avec leurs séances (relation correcte requise)
+    $modules = $this->moduleRepository->getAllModules();
+
+    // Préparer les contenus pour l'affichage
     $contenus = collect($modules)->map(function ($module) {
-        // If $module is array, cast to object
-        if (is_array($module)) {
-            $module = (object) $module;
-        }
-        // If seances is not set or not an object, set to empty collection
+        // S'assurer que $module est un objet
+        $module = (object) $module;
+
+        // Charger les séances liées (si relation "seances" définie dans Module.php)
         $seances = isset($module->seances) && is_iterable($module->seances)
             ? collect($module->seances)
             : collect();
+
+        // Calcul des heures
         $heuresTerminees = $seances->sum('duree');
-        $heuresRestantes = isset($module->masse_horaire_totale)
-            ? max(0, $module->masse_horaire_totale - $heuresTerminees)
-            : 0;
+        $masseHoraire = $module->masse_horaire ?? 0;
+        $heuresRestantes = max(0, $masseHoraire - $heuresTerminees);
         $etat = $heuresRestantes <= 0 ? 'terminé' : 'en cours';
 
         return [
             'nom' => $module->nom ?? '',
-            'masse_horaire_totale' => $module->masse_horaire_totale ?? 0,
+            'masse_horaire' => $masseHoraire,
             'heures_terminees' => $heuresTerminees,
             'heures_restantes' => $heuresRestantes,
             'etat' => $etat,
@@ -68,5 +70,6 @@ class DashboardController extends Controller
         'contenus'
     ));
 }
+
 
 }
