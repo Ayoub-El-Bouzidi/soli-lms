@@ -1,5 +1,7 @@
 <?php
+
 namespace Modules\Pkg_CahierText\Repositories;
+
 use Modules\Pkg_CahierText\Interfaces\ModuleRepositoryInterface;
 use Modules\Pkg_CahierText\Models\Module;
 
@@ -9,6 +11,7 @@ class ModuleRepository implements ModuleRepositoryInterface
     {
         return Module::with('seances', 'groupes')->get();
     }
+
 
     public function getModuleById($id)
     {
@@ -31,5 +34,18 @@ class ModuleRepository implements ModuleRepositoryInterface
     {
         $module = $this->getModuleById($id);
         return $module->delete();
+    }
+
+    public function getModulesByGroup($groupId = null)
+    {
+        $query = Module::with('seances', 'groupes');
+
+        if ($groupId) {
+            $query->whereHas('groupes', function ($q) use ($groupId) {
+                $q->where('groupes.id', $groupId);
+            });
+        }
+
+        return $query->get();
     }
 }

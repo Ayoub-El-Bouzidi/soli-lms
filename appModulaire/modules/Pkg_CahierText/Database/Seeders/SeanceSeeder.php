@@ -18,12 +18,15 @@ class SeanceSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create();
-        $seanceEmploies = SeanceEmploi::pluck('id')->toArray();
+        $seanceEmploies = SeanceEmploi::with('module')->get();
+        $formateurs = Formateur::pluck('id')->toArray();
 
-        for ($i = 0; $i < 50; $i++) {
+        foreach ($seanceEmploies as $seanceEmploi) {
             Seance::create([
                 'etat_validation' => $faker->randomElement(['pending', 'approved', 'rejected']),
-                'seance_emploie_id' => $faker->randomElement($seanceEmploies),
+                'seance_emploie_id' => $seanceEmploi->id,
+                'module_id' => $seanceEmploi->module_id,
+                'formateur_id' => $faker->randomElement($formateurs),
             ]);
         }
     }

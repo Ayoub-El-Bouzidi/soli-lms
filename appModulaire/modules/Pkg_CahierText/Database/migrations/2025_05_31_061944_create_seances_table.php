@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string("etat_validation");
             $table->foreignId("seance_emploie_id")->constrained("seance_emploies")->onDelete('cascade');
+            $table->foreignId("module_id")->constrained("modules")->onDelete('cascade');
+            $table->foreignId("formateur_id")->nullable()->constrained("formateurs")->onDelete('set null');
+            $table->foreignId("responsable_id")->nullable()->constrained("responsables")->onDelete('set null');
             $table->timestamps();
         });
     }

@@ -18,10 +18,18 @@ class ModuleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $groupId = $request->query('groupe_id');
+        $modules = $this->moduleRepository->getModulesByGroup($groupId);
+
+        // Get all groups for the filter dropdown
+        $groupes = \Modules\Pkg_CahierText\Models\Groupe::all();
+
         return view('Pkg_CahierText::cahierText.index', [
-            'modules' => $this->moduleRepository->getAllModules(),
+            'modules' => $modules,
+            'groupes' => $groupes,
+            'selectedGroupId' => $groupId
         ]);
     }
 
