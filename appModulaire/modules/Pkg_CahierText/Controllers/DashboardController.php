@@ -24,52 +24,74 @@ class DashboardController extends Controller
         $this->groupeRepository = $groupeRepository;
     }
 
-public function index()
-{
-    // Compter les modules terminés et restants
-    $modulesTermines = \Modules\Pkg_CahierText\Models\Module::where('heures_restees', 0)->count();
-    $modulesRestants = \Modules\Pkg_CahierText\Models\Module::where('heures_restees', '>', 0)->count();
+    public function index(Request $request)
+    {
+        // Get the selected group ID from the request
+        $selectedGroupId = $request->query('groupe_id');
 
-    // Compter les séances et les groupes
-    $seancesCount = $this->seanceRepository->getAllSeances()->count();
-    $groupesCount = $this->groupeRepository->getAllGroupes()->count();
+        // Get all groups for the filter dropdown
+        $groupes = $this->groupeRepository->getAllGroupes();
 
-    // Récupérer tous les modules avec leurs séances (relation correcte requise)
-    $modules = $this->moduleRepository->getAllModules();
+        // Filter modules by group if selected
+        $modules = $selectedGroupId
+            ? $this->moduleRepository->getModulesByGroup($selectedGroupId)
+            : $this->moduleRepository->getAllModules();
 
-    // Préparer les contenus pour l'affichage
-    $contenus = collect($modules)->map(function ($module) {
-        // S'assurer que $module est un objet
-        $module = (object) $module;
+        // Compter les modules terminés et restants (filtered by group if selected)
+        $query = \Modules\Pkg_CahierText\Models\Module::query();
+        if ($selectedGroupId) {
+            $query->whereHas('groupes', function ($q) use ($selectedGroupId) {
+                $q->where('groupes.id', $selectedGroupId);
+            });
+        }
+        $modulesTermines = (clone $query)->where('heures_restees', 0)->count();
+        $modulesRestants = (clone $query)->where('heures_restees', '>', 0)->count();
 
-        // Charger les séances liées (si relation "seances" définie dans Module.php)
-        $seances = isset($module->seances) && is_iterable($module->seances)
-            ? collect($module->seances)
-            : collect();
+        // Count séances for the selected group or all groups
+        $seancesQuery = \Modules\Pkg_CahierText\Models\Seance::query();
+        if ($selectedGroupId) {
+            $seancesQuery->whereHas('seance_emploi.module.groupes', function ($q) use ($selectedGroupId) {
+                $q->where('groupes.id', $selectedGroupId);
+            });
+        }
+        $seancesCount = $seancesQuery->count();
 
-        // Calcul des heures
-        $heuresTerminees = $seances->sum('duree');
-        $masseHoraire = $module->masse_horaire ?? 0;
-        $heuresRestantes = max(0, $masseHoraire - $heuresTerminees);
-        $etat = $heuresRestantes <= 0 ? 'terminé' : 'en cours';
+        // Get group count (this doesn't change with filtering)
+        $groupesCount = $groupes->count();
 
-        return [
-            'nom' => $module->nom ?? '',
-            'masse_horaire' => $masseHoraire,
-            'heures_terminees' => $heuresTerminees,
-            'heures_restantes' => $heuresRestantes,
-            'etat' => $etat,
-        ];
-    });
+        // Préparer les contenus pour l'affichage
+        $contenus = collect($modules)->map(function ($module) {
+            // S'assurer que $module est un objet
+            $module = (object) $module;
 
-    return view('Pkg_CahierText::dashboard', compact(
-        'modulesTermines',
-        'modulesRestants',
-        'seancesCount',
-        'groupesCount',
-        'contenus'
-    ));
-}
+            // Charger les séances liées (si relation "seances" définie dans Module.php)
+            $seances = isset($module->seances) && is_iterable($module->seances)
+                ? collect($module->seances)
+                : collect();
 
+            // Calcul des heures
+            $heuresTerminees = $seances->sum('duree');
+            $masseHoraire = $module->masse_horaire ?? 0;
+            $heuresRestantes = max(0, $masseHoraire - $heuresTerminees);
+            $etat = $heuresRestantes <= 0 ? 'terminé' : 'en cours';
 
+            return [
+                'nom' => $module->nom ?? '',
+                'masse_horaire' => $masseHoraire,
+                'heures_terminees' => $heuresTerminees,
+                'heures_restantes' => $heuresRestantes,
+                'etat' => $etat,
+            ];
+        });
+
+        return view('Pkg_CahierText::dashboard', compact(
+            'modulesTermines',
+            'modulesRestants',
+            'seancesCount',
+            'groupesCount',
+            'contenus',
+            'groupes',
+            'selectedGroupId'
+        ));
+    }
 }

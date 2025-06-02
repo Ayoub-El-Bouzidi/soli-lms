@@ -3,7 +3,24 @@
 @section('title', 'Tableau de bord')
 
 @section('content_header')
-    <h1>Tableau de bord</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Tableau de bord</h1>
+        <div class="d-flex align-items-center">
+            <form method="GET" action="{{ route('dashboard') }}" class="form-inline">
+                <div class="form-group mx-2">
+                    <label for="groupe_id" class="mr-2">Filtrer par groupe:</label>
+                    <select name="groupe_id" id="groupe_id" class="form-control" onchange="this.form.submit()">
+                        <option value="">Tous les groupes</option>
+                        @foreach($groupes as $groupe)
+                            <option value="{{ $groupe->id }}" {{ $selectedGroupId == $groupe->id ? 'selected' : '' }}>
+                                {{ $groupe->nom }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
 @stop
 
 @section('content')

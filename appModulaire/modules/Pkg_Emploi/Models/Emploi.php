@@ -12,18 +12,20 @@ class Emploi extends Model
 {
 
     use HasFactory;
-    protected $fillable = ["date_debut","date_fin","groupe_id"];
+    protected $fillable = ["date_debut", "date_fin", "groupe_id"];
 
     protected $table = 'emploies';
 
     public function groupe()
     {
-        return $this->belongsTo(Groupe::class, 'groupe_id');
+        return $this->belongsTo(Groupe::class);
     }
-    public function seancesemploies(){
+    public function seance_emplois()
+    {
         return $this->hasMany(SeanceEmploi::class);
     }
-    public function modules(){
+    public function modules()
+    {
         return $this->hasMany(Module::class);
     }
 }

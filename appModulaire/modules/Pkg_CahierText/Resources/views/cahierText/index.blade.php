@@ -3,12 +3,27 @@
 @section('content')
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-2 mt-3">
-
         <h3 class="">Mes Séances</h3>
-
-    {{-- Bouton pour afficher/masquer le formulaire --}}
         <button class="btn btn-success" id="toggleFormBtn">+ Créer une séance</button>
+    </div>
 
+    {{-- Group Filter --}}
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ route('modules.index') }}" class="d-flex align-items-center">
+                <div class="form-group mb-0 mr-3">
+                    <label for="groupe_id" class="mr-2">Filtrer par groupe:</label>
+                    <select name="groupe_id" id="groupe_id" class="form-control" onchange="this.form.submit()">
+                        <option value="">Tous les groupes</option>
+                        @foreach($groupes as $groupe)
+                            <option value="{{ $groupe->id }}" {{ $selectedGroupId == $groupe->id ? 'selected' : '' }}>
+                                {{ $groupe->nom }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </form>
+        </div>
     </div>
 
     {{-- Formulaire caché par défaut --}}
