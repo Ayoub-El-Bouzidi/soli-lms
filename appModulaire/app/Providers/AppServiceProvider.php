@@ -7,8 +7,6 @@ use Illuminate\Support\ServiceProvider;
 
 use Modules\Pkg_CahierText\app\Providers\CahierTextServiceProvider;
 use Modules\Pkg_Emploi\app\Providers\EmploiServiceProvider;
-use Modules\Pkg_PlanFormation\app\Providers\PlanServiceProvider;
-
 // Add the correct imports for the repositories
 use Modules\Pkg_CahierText\Repositories\ModuleRepository;
 use Modules\Pkg_CahierText\Repositories\SeanceRepository;

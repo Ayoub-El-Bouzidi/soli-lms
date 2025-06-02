@@ -1,7 +1,7 @@
 <?php
 
 
-use Modules\Blog\Controllers\DashboardController;
+use Modules\Pkg_Emploi\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Modules\Blog\Controllers\ArticleController;
 use Modules\Blog\Controllers\CategoryController;
@@ -11,6 +11,10 @@ use Modules\Blog\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 
 
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+Auth::routes();
 
 // Route::get('/', function () {
 //     return view('Blog::auth.login');

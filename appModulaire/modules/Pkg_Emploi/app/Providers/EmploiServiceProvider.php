@@ -17,10 +17,10 @@ class EmploiServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../../Routes/web.php');
 
         // Charger les migrations
-        $this->loadMigrationsFrom(__DIR__.'/../../Database/Migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../../Database/migrations');
 
         // Charger les vues
-        $this->loadViewsFrom(__DIR__.'/../../Resources/views', 'Blog');
+        $this->loadViewsFrom(__DIR__.'/../../Resources/views', 'Emploi');
 
         // Publier les assets si nécessaire
         $this->publishes([

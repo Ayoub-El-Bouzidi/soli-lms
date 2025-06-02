@@ -27,12 +27,12 @@ class EmploiSeeder extends Seeder
             if (!$groupId) continue;
 
             // Create 2 Emploie records per group (e.g., for different weeks or periods)
-            for ($i = 0; $i < 2; $i++) {
+            for ($i = 0; $i < 1; $i++) {
                 Emploi::create([
-                    'date_debut' => Carbon::create(2025, 5, 1)->addWeeks($i * 2),
-                    'date_fin' => Carbon::create(2025, 5, 7)->addWeeks($i * 2),
+                    'date_debut' => Carbon::create(2025, 6, 1)->addWeeks($i * 2),
+                    'date_fin' => Carbon::create(2025, 7, 7)->addWeeks($i * 2),
                     'groupe_id' => $groupId,
-                    
+
                 ]);
             }
         }

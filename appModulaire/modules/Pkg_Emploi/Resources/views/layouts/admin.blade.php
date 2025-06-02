@@ -22,7 +22,7 @@
                 <!-- User Profile Dropdown -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                       {{ Auth::user()->name }}
+                       {{-- {{ Auth::user()->name }} --}}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                         <li>
@@ -51,13 +51,13 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <li class="nav-item">
-                            <a href="{{ route('public.public.index') }}" class="nav-link">
+                            <a href="" class="nav-link">
                                 <i class="nav-icon fas fa-home"></i>
                                 <p>Accueil</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('dashboard') }}" class="nav-link">
+                            <a href="" class="nav-link">
                                 <i class="nav-icon fas fa-chart-bar"></i>
                                 <p>Dashboard</p>
                             </a>
@@ -73,30 +73,30 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('article.index') }}" class="nav-link">
+                                    <a href="" class="nav-link">
                                         <i class="fas fa-newspaper nav-icon"></i>
                                         <p>Articles</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('category.index') }}" class="nav-link">
+                                    <a href="" class="nav-link">
                                         <i class="fas fa-layer-group nav-icon"></i>
                                         <p>Categories</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('tag.index') }}" class="nav-link">
+                                    <a href="" class="nav-link">
                                         <i class="fas fa-tags nav-icon"></i>
                                         <p>Tags</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
 
-                                    <a href="{{ route('comment.index') }}" class="nav-link">
+                                    <a href="" class="nav-link">
                                         <i class="fas fa-comment nav-icon"></i>
                                         <p>Commentaires</p>
 
-                                    <a href="{{ route('user.index') }}" class="nav-link">
+                                    <a href="" class="nav-link">
                                         <i class="fas fa-user nav-icon"></i>
                                         <p>Users</p>
 
@@ -117,13 +117,14 @@
         <!-- Footer -->
         <footer class="main-footer">
             <div class="float-right d-none d-sm-inline">
-                <b>Version 1.0</b> 
+                <b>Version 1.0</b>
             </div>
-            <strong>Copyright &copy; 2024 <a href="{{ Route('public.public.index') }}"><b>Soli-</b>Blogs</a>.</strong> All rights reserved.
+            <strong>Copyright &copy; 2024 <a href=""><b>Soli-</b>Blogs</a>.</strong> All rights reserved.
         </footer>
     </div>
 
     <!-- Scripts -->
     @vite(['resources/js/admin.js'])
+    @yield('scripts')
 </body>
 </html>

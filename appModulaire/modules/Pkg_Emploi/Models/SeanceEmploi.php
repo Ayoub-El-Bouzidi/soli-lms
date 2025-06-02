@@ -23,8 +23,8 @@ class SeanceEmploi extends Model
         return $this->hasOne(Module::class);
     }
 
-    public function emploi(){
-        // return $this->belongsTo(Emploie::class);
+    public function emploie(){
+        return $this->belongsTo(Emploi::class);
     }
     public function salle(){
         return $this->hasOne(Salle::class,'article_tag');

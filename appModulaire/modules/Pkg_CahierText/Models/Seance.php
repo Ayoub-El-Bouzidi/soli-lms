@@ -6,6 +6,7 @@ use Modules\Pkg_CahierText\Models\Module;
 use Modules\Pkg_CahierText\Models\Responsable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Pkg_Emploi\Models\SeanceEmploi;
 
 class Seance extends Model
 {
@@ -36,5 +37,10 @@ class Seance extends Model
     public function responsable()
     {
         return $this->belongsTo(Responsable::class, 'responsable_id');
+    }
+
+    public function seanceemploi(){
+        return $this->belongsTo(SeanceEmploi::class);
+
     }
 }

@@ -1,22 +1,90 @@
 <?php
 
-namespace Modules\Blog\Controllers;
+namespace Modules\Pkg_Emploi\Controllers;
 
-
-use Modules\Core\Controllers\Controller;
-use Modules\Blog\Models\Article;
-use Modules\Blog\Models\Category;
-use Modules\Blog\Models\Comment;
-use App\Models\User;
+use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Modules\Core\Controllers\Controller;
+use Modules\Pkg_CahierText\Models\Groupe;
+use Modules\Pkg_Emploi\Models\Emploi;
+use Modules\Pkg_Emploi\Models\SeanceEmploi;
 
 class DashboardController extends Controller
 {
+    public function index(Request $request)
+    {
+        // 1. Récupérer tous les groupes
+        $groupes = Groupe::all();
+        $selectedGroupeId = $request->query('groupe_id', $groupes->first()?->id ?? null);
 
+        // 2. Total des séancesEmploi dans l'emploi actuel
+        $today = Carbon::today();
+        $emploiActuel = Emploi::where('groupe_id', $selectedGroupeId)
+            ->whereDate('date_debut', '<=', $today)
+            ->whereDate('date_fin', '>=', $today)
+            ->first();
 
-    public function index(){
+        $totalSeanceEmploies = 0;
+        if ($emploiActuel) {
+            $totalSeanceEmploies = SeanceEmploi::where('emploie_id', $emploiActuel->id)->count();
+        }
 
-        
+        // 3. Total des modules associés au groupe (via table pivot 'groupe_module')
+        $totalModulesGroupe = DB::table('groupe_module')
+            ->where('groupe_id', $selectedGroupeId)
+            ->count();
+
+        // 4. Jours restants jusqu'à la fin de l'emploi
+        $joursRestants = 0;
+        if ($emploiActuel) {
+            $fin = Carbon::parse($emploiActuel->date_fin);
+            $aujourdHui = Carbon::today();
+            $joursRestants = max(0, $aujourdHui->diffInDays($fin));
+        }
+
+        // 5. Date de la dernière modification de l'emploi actuel
+        $derniersModification = $emploiActuel?->updated_at; // null si pas d'emploi
+
+        // 6. Calcul des modules 'terminés' et 'non terminés'
+        //    on crée un tableau de comptages : ['Terminés' => x, 'Non terminés' => y]
+        $statusCounts = ['Terminés' => 0, 'Non terminés' => 0];
+
+        // 6.a. Récupérer le groupe avec ses modules (many-to-many pivot)
+        $groupe = Groupe::with('modules')->findOrFail($selectedGroupeId);
+
+        foreach ($groupe->modules as $module) {
+            // 6.b. Récupérer toutes les séancesEmploi pour ce module et ce groupe
+            $seanceEmplois = DB::table('seance_emploies')
+                ->join('emploies', 'seance_emploies.emploie_id', '=', 'emploies.id')
+                ->where('emploies.groupe_id', $selectedGroupeId)
+                ->where('seance_emploies.module_id', $module->id)
+                ->get(['seance_emploies.heur_debut', 'seance_emploies.heur_fin']);
+
+            $totalMinutes = 0;
+            foreach ($seanceEmplois as $se) {
+                $start = Carbon::parse($se->heur_debut);
+                $end = Carbon::parse($se->heur_fin);
+                $totalMinutes += $start->diffInMinutes($end);
+            }
+
+            $totalHours = round($totalMinutes / 60, 2);
+            if ($totalHours >= $module->masse_horaire) {
+                $statusCounts['Terminés']++;
+            } else {
+                $statusCounts['Non terminés']++;
+            }
+        }
+
+        // 7. Passer tout à la vue
+        return view('Emploi::admin.dashboard', [
+            'groupes'               => $groupes,
+            'selectedGroupeId'      => $selectedGroupeId,
+            'totalSeanceEmploies'   => $totalSeanceEmploies,
+            'totalModulesGroupe'    => $totalModulesGroupe,
+            'joursRestants'         => $joursRestants,
+            'derniersModification'  => $derniersModification,
+            'modulesPieData'        => $statusCounts,
+        ]);
     }
 }
-
