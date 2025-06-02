@@ -20,12 +20,21 @@ class ModuleRepository implements ModuleRepositoryInterface
 
     public function createModule(array $data)
     {
+        // Set heures_restees equal to masse_horaire initially
+        $data['heures_restees'] = $data['masse_horaire'];
         return Module::create($data);
     }
 
     public function updateModule($id, array $data)
     {
         $module = $this->getModuleById($id);
+
+        // Update heures_restees if masse_horaire changes
+        if (isset($data['masse_horaire']) && $data['masse_horaire'] != $module->masse_horaire) {
+            $difference = $data['masse_horaire'] - $module->masse_horaire;
+            $data['heures_restees'] = $module->heures_restees + $difference;
+        }
+
         $module->update($data);
         return $module;
     }

@@ -5,6 +5,7 @@ namespace Modules\Pkg_CahierText\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Pkg_CahierText\Repositories\ModuleRepository;
+use Modules\Pkg_CahierText\Models\Groupe;
 
 class ModuleController extends Controller
 {
@@ -22,11 +23,9 @@ class ModuleController extends Controller
     {
         $groupId = $request->query('groupe_id');
         $modules = $this->moduleRepository->getModulesByGroup($groupId);
+        $groupes = Groupe::all();
 
-        // Get all groups for the filter dropdown
-        $groupes = \Modules\Pkg_CahierText\Models\Groupe::all();
-
-        return view('Pkg_CahierText::cahierText.index', [
+        return view('Pkg_CahierText::modules.index', [
             'modules' => $modules,
             'groupes' => $groupes,
             'selectedGroupId' => $groupId
@@ -38,7 +37,8 @@ class ModuleController extends Controller
      */
     public function create()
     {
-        return view('Pkg_CahierText::cahierText.create');
+        $groupes = Groupe::all();
+        return view('Pkg_CahierText::modules.create', compact('groupes'));
     }
 
     /**
@@ -46,9 +46,21 @@ class ModuleController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'nom' => 'required|string|max:255',
+            'masse_horaire' => 'required|integer|min:1',
+            'groupes' => 'array'
+        ]);
+
         $data = $request->all();
-        $this->moduleRepository->createModule($data);
-        return redirect()->route('modules.index')->with('success', 'Module créé avec succès.');
+        $module = $this->moduleRepository->createModule($data);
+
+        if ($request->has('groupes')) {
+            $module->groupes()->sync($request->groupes);
+        }
+
+        return redirect()->route('modules.index')
+            ->with('success', 'Module créé avec succès.');
     }
 
     /**
@@ -57,7 +69,7 @@ class ModuleController extends Controller
     public function show(string $id)
     {
         $module = $this->moduleRepository->getModuleById($id);
-        return view('Pkg_CahierText::cahierText.show', compact('module'));
+        return view('Pkg_CahierText::modules.show', compact('module'));
     }
 
     /**
@@ -66,7 +78,8 @@ class ModuleController extends Controller
     public function edit(string $id)
     {
         $module = $this->moduleRepository->getModuleById($id);
-        return view('Pkg_CahierText::cahierText.edit', compact('module'));
+        $groupes = Groupe::all();
+        return view('Pkg_CahierText::modules.edit', compact('module', 'groupes'));
     }
 
     /**
@@ -74,9 +87,21 @@ class ModuleController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $request->validate([
+            'nom' => 'required|string|max:255',
+            'masse_horaire' => 'required|integer|min:1',
+            'groupes' => 'array'
+        ]);
+
         $data = $request->all();
-        $this->moduleRepository->updateModule($id, $data);
-        return redirect()->route('modules.index')->with('success', 'Module mis à jour avec succès.');
+        $module = $this->moduleRepository->updateModule($id, $data);
+
+        if ($request->has('groupes')) {
+            $module->groupes()->sync($request->groupes);
+        }
+
+        return redirect()->route('modules.index')
+            ->with('success', 'Module mis à jour avec succès.');
     }
 
     /**
@@ -85,6 +110,7 @@ class ModuleController extends Controller
     public function destroy(string $id)
     {
         $this->moduleRepository->deleteModule($id);
-        return redirect()->route('modules.index')->with('success', 'Module supprimé avec succès.');
+        return redirect()->route('modules.index')
+            ->with('success', 'Module supprimé avec succès.');
     }
 }
