@@ -98,9 +98,52 @@
             </div>
 
             {{-- 3) Charts et tableau --}}
+          
             <div class="row">
-                {{-- 3.a) Pie Chart : Modules terminés vs non terminés --}}
-                <div class="col-md-6">
+                {{-- 3.a) Striped Full Width Table --}}
+                <div class="col-md-7">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Progression des Modules</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body p-0">
+                            <table class="table table-striped projects">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 30%">Nom du module</th>
+                                        <th style="width: 20%">Masse horaire</th>
+                                        <th style="width: 20%">Heures passées</th>
+                                        <th style="width: 30%">Progression</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($modulesProgression as $module)
+                                        <tr>
+                                            <td>{{ $module->nom }}</td>
+                                            <td>{{ $module->masse_horaire }} h</td>
+                                            <td>{{ $module->heures_passees ?? 0 }} h</td>
+                                            <td>
+                                                <div class="progress progress-xs">
+                                                    <div class="progress-bar bg-success" style="width: {{ $module->progression }}%"></div>
+                                                </div>
+                                                <small>{{ $module->progression }}%</small>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="text-center">Aucun module trouvé pour ce groupe.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+
+                {{-- 3.b) Pie Chart --}}
+                <div class="col-md-5">
                     <div class="card card-success">
                         <div class="card-header">
                             <h3 class="card-title">Statut des modules</h3>
@@ -118,56 +161,8 @@
                         </div>
                     </div>
                 </div>
-
-                {{-- 3.b) Striped Full Width Table : Détails des Modules --}}
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Détails des Modules</h3>
-                        </div>
-                        <div class="card-body p-0">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th style="width:10px">#</th>
-                                        <th>Nom du module</th>
-                                        <th>Masse horaire (h)</th>
-                                        <th style="width:50px">État</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                        $index = 1;
-                                    @endphp
-
-                                    @foreach (['termines' => 'bg-success', 'non_termines' => 'bg-danger'] as $statusKey => $badgeClass)
-                                        @foreach ($modulesPieData[$statusKey] ?? [] as $moduleData)
-                                            <tr>
-                                                <td>{{ $index++ }}.</td>
-                                                <td>{{ $moduleData['module_name'] }}</td>
-                                                <td>{{ round($moduleData['total_hours'], 2) }}</td>
-                                                <td>
-                                                    <span class="badge {{ $badgeClass }}">
-                                                        {{ $statusKey === 'termines' ? 'Terminé' : 'Non terminé' }}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endforeach
-
-                                    @if ($index === 1)
-                                        <tr>
-                                            <td colspan="4" class="text-center">
-                                                Aucun module trouvé pour ce groupe.
-                                            </td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
             </div>
+
 
         </div>
     </section>

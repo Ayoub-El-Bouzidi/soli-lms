@@ -76,7 +76,29 @@ class DashboardController extends Controller
             }
         }
 
-        // 7. Passer tout à la vue
+        // 7. Progression des modules
+        $modulesProgression = DB::table('modules')
+        ->join('groupe_module', 'groupe_module.module_id', '=', 'modules.id')
+        ->where('groupe_module.groupe_id', $selectedGroupeId)
+        ->select('modules.id', 'modules.nom', 'modules.masse_horaire')
+        ->orderBy('modules.nom')
+        ->get();
+
+        foreach ($modulesProgression as $module) {
+            $totalMinutes = DB::table('seance_emploies')
+                ->join('emploies', 'emploies.id', '=', 'seance_emploies.emploie_id')
+                ->where('seance_emploies.module_id', $module->id)
+                ->where('emploies.groupe_id', $selectedGroupeId)
+                ->sum(DB::raw('TIMESTAMPDIFF(MINUTE, seance_emploies.heur_debut, seance_emploies.heur_fin)'));
+
+            $module->heures_passees = round($totalMinutes / 60, 2);
+            $module->progression = $module->masse_horaire
+                ? round($module->heures_passees / $module->masse_horaire * 100, 0)
+                : 0;
+        }
+
+
+        // 8. Passer tout à la vue
         return view('Emploi::admin.dashboard', [
             'groupes'               => $groupes,
             'selectedGroupeId'      => $selectedGroupeId,
@@ -85,6 +107,7 @@ class DashboardController extends Controller
             'joursRestants'         => $joursRestants,
             'derniersModification'  => $derniersModification,
             'modulesPieData'        => $statusCounts,
+            'modulesProgression'    => $modulesProgression,
         ]);
     }
 }
