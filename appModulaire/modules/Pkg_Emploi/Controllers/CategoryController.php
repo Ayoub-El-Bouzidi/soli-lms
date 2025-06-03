@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Blog\Controllers;
+namespace Modules\Emploi\Controllers;
 
 use Modules\Core\Controllers\Controller;
 
@@ -96,7 +96,7 @@ class CategoryController extends Controller
         return redirect()->route('category.index');
     }
 
-    
+
     public function import(ImportRequest $request)
     {
         Excel::import(new CategoriesImport, $request->file('file'));

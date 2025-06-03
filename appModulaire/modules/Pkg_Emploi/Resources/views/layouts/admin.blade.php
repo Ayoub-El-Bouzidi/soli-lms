@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     @vite(['resources/css/admin.css', 'resources/js/admin.js'])
+    @yield('css')
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
@@ -44,8 +45,8 @@
         <!-- Sidebar -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="/" class="brand-link">
-                <img src="https://adminlte.io/themes/v3/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">Blog</span>
+                <img src="{{ asset('AdminLTELogo.png')}}" alt="AdminLTE Logo" class="brand-image img-circle " style="opacity: .8">
+                <span class="brand-text font-weight-light">Soli LMS</span>
             </a>
             <div class="sidebar">
                 <nav class="mt-2">
@@ -67,15 +68,15 @@
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-table"></i>
                                 <p>
-                                    PkgsBlog
+                                    Emploies du temps
                                     <i class="right fas fa-angle-left"></i> <!-- Flèche pour sous-menu -->
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="" class="nav-link">
+                                    <a href="{{route('emploie.index')}}" class="nav-link">
                                         <i class="fas fa-newspaper nav-icon"></i>
-                                        <p>Articles</p>
+                                        <p>Emploies</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">

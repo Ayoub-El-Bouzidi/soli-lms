@@ -2,6 +2,7 @@
 
 
 use Modules\Pkg_Emploi\Controllers\DashboardController;
+use Modules\Pkg_Emploi\Controllers\EmploiController;
 use Illuminate\Support\Facades\Route;
 use Modules\Blog\Controllers\ArticleController;
 use Modules\Blog\Controllers\CategoryController;
@@ -13,6 +14,8 @@ use App\Http\Controllers\UserController;
 
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+Route::resource('/dashboard/emploie',EmploiController::class);
 
 Auth::routes();
 
