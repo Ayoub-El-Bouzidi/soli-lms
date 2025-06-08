@@ -18,8 +18,8 @@ class Responsable extends Model
     /**
      * Get the sessions validated by the responsable.
      */
-    public function validatedSeances()
-    {
-        return $this->hasMany(Seance::class, 'responsable_id');
-    }
+    // public function validatedSeances()
+    // {
+    //     return $this->hasMany(Seance::class, 'responsable_id');
+    // }
 }
