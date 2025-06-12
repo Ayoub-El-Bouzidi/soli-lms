@@ -49,7 +49,7 @@
                             <label for="heures_prevues">Heures Prévues <span class="text-danger">*</span></label>
                             <input type="number" name="heures_prevues" id="heures_prevues"
                                 class="form-control @error('heures_prevues') is-invalid @enderror"
-                                value="{{ old('heures_prevues') }}" step="0.5" min="0.5" max="8" required>
+                                value="{{ old('heures_prevues') }}" step="0.5" min="1" max="8" required>
                             @error('heures_prevues')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

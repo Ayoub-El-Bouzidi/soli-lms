@@ -5,9 +5,9 @@ use Modules\Pkg_CahierText\Controllers\DashboardController;
 use Modules\Pkg_CahierText\Controllers\ModuleController;
 use Modules\Pkg_CahierText\Controllers\CahierEntryController;
 
-Route::middleware(['web'])->group(function () {
     // Route pour le tableau de bord
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // middleware('auth')->
 
     // Routes pour les modules
     Route::resource('modules', ModuleController::class);
@@ -21,4 +21,3 @@ Route::middleware(['web'])->group(function () {
         Route::put('/{entry}', [CahierEntryController::class, 'update'])->name('cahier.update');
         Route::delete('/{entry}', [CahierEntryController::class, 'destroy'])->name('cahier.destroy');
     });
-});

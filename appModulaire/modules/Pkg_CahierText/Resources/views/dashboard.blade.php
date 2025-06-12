@@ -24,6 +24,20 @@
 @stop
 
 @section('content')
+
+    {{-- Profile Info --}}
+@if(Auth::check())
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3 class="card-title">Mon Profil</h3>
+        </div>
+        <div class="card-body">
+            <p><strong>Nom :</strong> {{ Auth::user()->name }}</p>
+            <p><strong>Email :</strong> {{ Auth::user()->email }}</p>
+        </div>
+    </div>
+@endif
+
     <div class="row">
         <!-- Modules terminés -->
         <div class="col-lg-3 col-6">
@@ -176,32 +190,3 @@
                     borderWidth: 2,
                     borderColor: '#fff'
                 }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            font: {
-                                size: 14
-                            }
-                        }
-                    },
-                    tooltip: {
-                        enabled: true,
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                let value = context.raw || 0;
-                                return `${label}: ${value}`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    </script>
-@stop
