@@ -38,6 +38,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->loadViewsFrom(
+            base_path('appModulaire/modules/Pkg_CahierText/Resources/views'),
+            'cahier'
+        );
     }
 }
