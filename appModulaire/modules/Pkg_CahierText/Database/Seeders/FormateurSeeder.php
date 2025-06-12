@@ -20,11 +20,11 @@ class FormateurSeeder extends Seeder
         }
 
         $tutors = [
-            ['nom' => 'Imane', 'prenom' => '', 'email' => 'imane@example.com', 'password' => bcrypt('password')],
-            ['nom' => 'Fouad', 'prenom' => '', 'email' => 'fouad@example.com', 'password' => bcrypt('password')],
-            ['nom' => 'Abdeouahab', 'prenom' => '', 'email' => 'abdeouahab@example.com', 'password' => bcrypt('password')],
+            ['nom' => 'Imane', 'prenom' => 'Bouziane', 'email' => 'imane@example.com', 'password' => bcrypt('password')],
+            ['nom' => 'Fouad', 'prenom' => 'Esseraj', 'email' => 'fouad@example.com', 'password' => bcrypt('password')],
+            ['nom' => 'Abdeouahab', 'prenom' => 'Souklabi', 'email' => 'abdeouahab@example.com', 'password' => bcrypt('password')],
             ['nom' => 'Fatin', 'prenom' => 'Chebab', 'email' => 'fatin@example.com', 'password' => bcrypt('password')],
-            ['nom' => 'Abdeltif', 'prenom' => '', 'email' => 'abdeltif@example.com', 'password' => bcrypt('password')],
+            ['nom' => 'Abdeltif', 'prenom' => 'Souklabi', 'email' => 'abdeltif@example.com', 'password' => bcrypt('password')],
             ['nom' => 'Firdaous', 'prenom' => 'John', 'email' => 'john.smith@example.com', 'password' => bcrypt('password')], // English tutor
             ['nom' => 'Amin', 'prenom' => 'Jane', 'email' => 'jane.doe@example.com', 'password' => bcrypt('password')], // Soft Skills tutor
         ];

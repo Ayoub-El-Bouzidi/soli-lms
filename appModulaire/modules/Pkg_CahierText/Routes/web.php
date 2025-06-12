@@ -6,8 +6,7 @@ use Modules\Pkg_CahierText\Controllers\ModuleController;
 use Modules\Pkg_CahierText\Controllers\CahierEntryController;
 
     // Route pour le tableau de bord
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    // middleware('auth')->
+    Route::get('/dashboard', [DashboardController::class, 'index']) ->name('dashboard');
 
     // Routes pour les modules
     Route::resource('modules', ModuleController::class);
