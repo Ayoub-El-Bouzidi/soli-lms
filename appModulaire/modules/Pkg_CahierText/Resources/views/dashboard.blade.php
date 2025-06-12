@@ -26,17 +26,20 @@
 @section('content')
 
     {{-- Profile Info --}}
-@if(Auth::check())
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3 class="card-title">Mon Profil</h3>
+
+    {{-- Profile Info --}}
+    @php
+        $formateur = Auth::guard('formateurs')->user();
+    @endphp
+
+    @if($formateur)
+        <div class="card mb-4">
+            <div class="card-body">
+                <p> {{ $formateur->nom }}</p>
+                <p> {{ $formateur->prenom }}</p>
+            </div>
         </div>
-        <div class="card-body">
-            <p><strong>Nom :</strong> {{ Auth::user()->name }}</p>
-            <p><strong>Email :</strong> {{ Auth::user()->email }}</p>
-        </div>
-    </div>
-@endif
+    @endif
 
     <div class="row">
         <!-- Modules terminés -->
@@ -190,3 +193,7 @@
                     borderWidth: 2,
                     borderColor: '#fff'
                 }]
+            }
+        });
+    </script>
+@stop

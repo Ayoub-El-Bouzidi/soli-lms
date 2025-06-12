@@ -1,15 +1,15 @@
 <?php
 
 namespace Modules\Pkg_CahierText\Models;
-
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Pkg_CahierText\Models\Seance;
 
 
-class Formateur extends Model
+class Formateur extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
      protected $fillable = ['user_id', 'nom', 'prenom', 'email', 'password'];
 
     /**

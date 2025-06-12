@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'formateurs' => [
+            'driver' => 'session',
+            'provider' => 'formateurs',
+        ],
     ],
 
     /*
@@ -65,10 +69,10 @@ return [
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'formateurs' => [
+            'driver' => 'eloquent',
+            'model' => Modules\Pkg_CahierText\Models\Formateur::class,
+        ],
     ],
 
     /*
