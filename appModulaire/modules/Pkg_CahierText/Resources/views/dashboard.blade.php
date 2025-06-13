@@ -28,18 +28,40 @@
     {{-- Profile Info --}}
 
     {{-- Profile Info --}}
-    @php
-        $formateur = Auth::guard('formateurs')->user();
-    @endphp
+ @php
+    $formateur = Auth::guard('formateurs')->user();
+    $responsable = Auth::guard('responsables')->user();
+@endphp
 
-    @if($formateur)
-        <div class="card mb-4">
-            <div class="card-body">
-                <p> {{ $formateur->nom }}</p>
-                <p> {{ $formateur->prenom }}</p>
-            </div>
-        </div>
-    @endif
+@if($formateur)
+    <li class="nav-item dropdown user-menu">
+        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+            <span class="d-none d-md-inline">{{ $formateur->nom }} {{ $formateur->prenom }}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+            <li class="user-footer">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-default btn-flat float-right">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </li>
+@elseif($responsable)
+    <li class="nav-item dropdown user-menu">
+        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+            <span class="d-none d-md-inline">{{ $responsable->nom }} {{ $responsable->prenom }}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+            <li class="user-footer">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-default btn-flat float-right">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </li>
+@endif
 
     <div class="row">
         <!-- Modules terminés -->

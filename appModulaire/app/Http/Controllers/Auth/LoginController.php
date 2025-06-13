@@ -40,6 +40,14 @@ class LoginController extends Controller
     }
     protected function guard()
     {
+    if (request()->is('formateur/*')) {
         return Auth::guard('formateurs');
+    }
+
+    if (request()->is('responsable/*')) {
+        return Auth::guard('responsables');
+    }
+
+    return Auth::guard(); // fallback
     }
 }

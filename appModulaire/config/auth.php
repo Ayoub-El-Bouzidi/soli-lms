@@ -44,6 +44,10 @@ return [
             'driver' => 'session',
             'provider' => 'formateurs',
         ],
+        'responsables' => [
+            'driver' => 'session',
+            'provider' => 'responsables',
+        ],
     ],
 
     /*
@@ -72,6 +76,10 @@ return [
         'formateurs' => [
             'driver' => 'eloquent',
             'model' => Modules\Pkg_CahierText\Models\Formateur::class,
+        ],
+        'responsables' => [
+            'driver' => 'eloquent',
+            'model' => Modules\Pkg_CahierText\Models\Responsable::class,
         ],
     ],
 
