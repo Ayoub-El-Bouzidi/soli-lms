@@ -4,10 +4,12 @@ namespace Modules\Pkg_CahierText\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Responsable extends Model
+class Responsable extends Authenticatable
 {
-     use HasFactory;
+     use HasFactory, Notifiable;
 
     protected $fillable = [
         'nom',
