@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Modules\Pkg_CahierText\Models\Responsable;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class ResponsableSeeder extends Seeder
 {
@@ -20,6 +21,11 @@ class ResponsableSeeder extends Seeder
             'email' => 'responsable@example.com',
             'password' => bcrypt('password'),
         ]);
+
+        // Assign the 'responsable' role to the user
+        $responsableRole = Role::findByName('responsable');
+        $user->assignRole($responsableRole);
+
         Responsable::create([
             'user_id' => $user->id,
             'nom' => 'Manager',

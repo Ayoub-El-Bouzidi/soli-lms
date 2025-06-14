@@ -10,6 +10,13 @@ use Carbon\Carbon;
 
 class CahierEntryController extends Controller
 {
+    // public function __construct()
+    // {
+    //     $this->middleware('can:view,cahier_entry')->only(['index', 'show']);
+    //     $this->middleware('can:create,cahier_entry')->only(['create', 'store']);
+    //     $this->middleware('can:update,cahier_entry')->only(['edit', 'update']);
+    //     $this->middleware('can:delete,cahier_entry')->only(['destroy']);
+    // }
     public function index()
     {
         $entries = CahierEntry::with('module')

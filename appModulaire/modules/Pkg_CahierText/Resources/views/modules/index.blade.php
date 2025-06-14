@@ -5,9 +5,11 @@
 @section('content_header')
     <div class="d-flex justify-content-between">
         <h1>Gestion des Modules</h1>
-        <a href="{{ route('modules.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Nouveau Module
-        </a>
+        @role('responsable')
+            <a href="{{ route('modules.create') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nouveau Module
+            </a>
+        @endrole
     </div>
 @stop
 
@@ -83,13 +85,15 @@
                                             </button>
                                         </form>
 
-                                        {{-- Cahier de texte button - Only show if hours remaining --}}
-                                        @if($module->heures_restees > 0)
-                                            <a href="{{ route('cahier.create', ['module_id' => $module->id]) }}"
-                                               class="btn btn-sm btn-success" title="Cahier de texte">
-                                                <i class="fas fa-book"></i>
-                                            </a>
-                                        @endif
+                                        {{-- Cahier de texte button - Only show for formateurs and if hours remaining --}}
+                                        @role('formateur')
+                                            @if($module->heures_restees > 0)
+                                                <a href="{{ route('cahier.create', ['module_id' => $module->id]) }}"
+                                                   class="btn btn-sm btn-success" title="Cahier de texte">
+                                                    <i class="fas fa-book"></i>
+                                                </a>
+                                            @endif
+                                        @endrole
                                     </div>
                                 </td>
                             </tr>
