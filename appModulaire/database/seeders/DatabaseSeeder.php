@@ -23,13 +23,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // First run the RolePermissionSeeder to create roles
+        $this->call(RolePermissionSeeder::class);
+
+        // Then run the module seeders
         $this->call([
-            // DatabaseSeederCahieText::class,
-            // DatabaseSeederEmploi::class,
-            ResponsableSeeder::class,
-            FormateurSeeder::class,
+            \Modules\Pkg_CahierText\Database\Seeders\ResponsableSeeder::class,
+            \Modules\Pkg_CahierText\Database\Seeders\FormateurSeeder::class,
             GroupeSeeder::class,
-            // FormateurSeeder::class,
             GroupeFormateurSeeder::class,
             ModuleSeeder::class,
             GroupeModuleSeeder::class,
@@ -37,8 +38,6 @@ class DatabaseSeeder extends Seeder
             EmploiSeeder::class,
             SeanceEmploieSeeder::class,
             SeanceSeeder::class,
-
-            // Add other seeders here if needed
         ]);
 
         // You can also call other seeders directly if needed

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -38,16 +39,29 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+
     protected function guard()
     {
-    if (request()->is('formateur/*')) {
-        return Auth::guard('formateurs');
+        $role = request()->input('role', 'web');
+        return Auth::guard($role);
     }
 
-    if (request()->is('responsable/*')) {
-        return Auth::guard('responsables');
+    protected function authenticated(Request $request, $user)
+    {
+        if ($request->input('role') === 'formateurs') {
+            return redirect()->route('formateur.dashboard');
+        } elseif ($request->input('role') === 'responsables') {
+            return redirect()->route('responsable.dashboard');
+        }
+        return redirect()->route('dashboard');
     }
 
-    return Auth::guard(); // fallback
+    protected function validateLogin(Request $request)
+    {
+        $request->validate([
+            $this->username() => 'required|string',
+            'password' => 'required|string',
+            'role' => 'required|string|in:web,formateurs,responsables',
+        ]);
     }
 }

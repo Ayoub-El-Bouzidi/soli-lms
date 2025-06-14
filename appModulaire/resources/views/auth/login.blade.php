@@ -5,13 +5,16 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header justify-content-center">
+                <div class="card-header justify-content-center d-flex">
                     <img class="w-25 h-25 p-3" src="/appModulaire/resources/assets/AdminLTELogo.png" alt="">
                 </div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
+
+                        {{-- Hidden role field with default value --}}
+                        <input type="hidden" name="role" value="web">
 
                         <div class="row mb-3">
                             <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>

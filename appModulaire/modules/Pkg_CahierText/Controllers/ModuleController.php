@@ -9,6 +9,14 @@ use Modules\Pkg_CahierText\Models\Groupe;
 
 class ModuleController extends Controller
 {
+
+    // public function __construct()
+    // {
+    //     $this->middleware('permission:view_cahier')->only(['index']);
+    //     $this->middleware('permission:create_cahier')->only(['create', 'store']);
+    //     $this->middleware('permission:edit_cahier')->only(['edit', 'update']);
+    //     $this->middleware('permission:delete_cahier')->only(['destroy']);
+    // }
     protected $moduleRepository;
 
     public function __construct(ModuleRepository $moduleRepository)
