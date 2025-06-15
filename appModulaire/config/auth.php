@@ -72,7 +72,6 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
-
         'formateurs' => [
             'driver' => 'eloquent',
             'model' => Modules\Pkg_CahierText\Models\Formateur::class,

@@ -3,6 +3,7 @@
 namespace Modules\Pkg_CahierText\Controllers;
 
 use App\Http\Controllers\Controller;
+use Modules\Pkg_CahierText\app\Requests\CahierEntryRequest;
 use Modules\Pkg_CahierText\Models\CahierEntry;
 use Modules\Pkg_CahierText\Models\Module;
 use Illuminate\Http\Request;
@@ -50,16 +51,9 @@ class CahierEntryController extends Controller
         return view('Pkg_CahierText::cahier.create', compact('modules', 'selectedModule'));
     }
 
-    public function store(Request $request)
+    public function store(CahierEntryRequest $request)
     {
-        $validated = $request->validate([
-            'module_id' => 'required|exists:modules,id',
-            'date' => 'required|date',
-            'heures_prevues' => 'required|numeric|min:0.5|max:8',
-            'heure_debut' => 'required',
-            'contenu' => 'nullable|string',
-            'objectifs' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         // Check if module has enough remaining hours
         $module = Module::findOrFail($validated['module_id']);
