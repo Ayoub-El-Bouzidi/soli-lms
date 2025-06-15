@@ -1,17 +1,17 @@
 <?php
 
-namespace Modules\Blog\app\Requests;
+namespace Modules\Pkg_CahierText\app\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ImportRequest extends FormRequest
+class CahierEntryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,7 +22,12 @@ class ImportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file' => 'required|file|mimes:xlsx,xlsmax:10240'
+            'module_id' => 'required|exists:modules,id',
+            'date' => 'required|date',
+            'heures_prevues' => 'required|numeric|min:0.5|max:8',
+            'heure_debut' => 'required',
+            'contenu' => 'nullable|string',
+            'objectifs' => 'nullable|string',
         ];
     }
 }

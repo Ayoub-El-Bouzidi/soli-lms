@@ -14,16 +14,24 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create roles
-        $responsableRole = Role::create(['name' => 'responsable']);
-        $formateurRole = Role::create(['name' => 'formateur']);
+        // Get or create roles
+        $responsableRole = Role::firstOrCreate(['name' => 'responsable']);
+        $formateurRole = Role::firstOrCreate(['name' => 'formateur']);
 
         // Create permissions
-        Permission::create(['name' => 'create_modules']);
-        Permission::create(['name' => 'view_modules']);
+        $permissions = [
+            'create_modules',
+            'view_modules',
+            'edit_modules',
+            'delete_modules'
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
 
         // Assign permissions to roles
-        $responsableRole->givePermissionTo(['create_modules', 'view_modules']);
-        $formateurRole->givePermissionTo('view_modules');
+        $responsableRole->syncPermissions($permissions);
+        $formateurRole->syncPermissions(['view_modules']);
     }
 }

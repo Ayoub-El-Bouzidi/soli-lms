@@ -4,8 +4,11 @@ namespace Modules\Pkg_CahierText\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Pkg_CahierText\app\Requests\ModuleRequest;
 use Modules\Pkg_CahierText\Repositories\ModuleRepository;
 use Modules\Pkg_CahierText\Models\Groupe;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ModuleController extends Controller
 {
@@ -22,6 +25,10 @@ class ModuleController extends Controller
     public function __construct(ModuleRepository $moduleRepository)
     {
         $this->moduleRepository = $moduleRepository;
+        $this->middleware('permission:create_modules')->only(['create', 'store']);
+        $this->middleware('permission:view_modules')->only(['index', 'show']);
+        $this->middleware('permission:edit_modules')->only(['edit', 'update']);
+        $this->middleware('permission:delete_modules')->only(['destroy']);
     }
 
     /**
@@ -52,13 +59,9 @@ class ModuleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ModuleRequest $request)
     {
-        $request->validate([
-            'nom' => 'required|string|max:255',
-            'masse_horaire' => 'required|integer|min:1',
-            'groupes' => 'array'
-        ]);
+        $request->validated();
 
         $data = $request->all();
         $module = $this->moduleRepository->createModule($data);
@@ -93,13 +96,9 @@ class ModuleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ModuleRequest $request, string $id)
     {
-        $request->validate([
-            'nom' => 'required|string|max:255',
-            'masse_horaire' => 'required|integer|min:1',
-            'groupes' => 'array'
-        ]);
+        $request->validated();
 
         $data = $request->all();
         $module = $this->moduleRepository->updateModule($id, $data);

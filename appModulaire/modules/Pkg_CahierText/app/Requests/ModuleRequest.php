@@ -1,17 +1,17 @@
 <?php
 
-namespace Modules\Blog\app\Requests;
+namespace Modules\Pkg_CahierText\app\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryRequest extends FormRequest
+class ModuleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,8 +22,9 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:255',
-            'slug'  => 'required|max:255',
+            'nom' => 'required|string|max:255',
+            'masse_horaire' => 'required|integer|min:1',
+            'groupes' => 'array'
         ];
     }
 }
