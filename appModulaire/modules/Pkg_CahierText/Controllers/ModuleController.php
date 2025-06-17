@@ -4,11 +4,11 @@ namespace Modules\Pkg_CahierText\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use Modules\Pkg_CahierText\App\Exports\ModulesExport;
 use Modules\Pkg_CahierText\app\Requests\ModuleRequest;
 use Modules\Pkg_CahierText\Repositories\ModuleRepository;
 use Modules\Pkg_CahierText\Models\Groupe;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class ModuleController extends Controller
 {
@@ -119,5 +119,14 @@ class ModuleController extends Controller
         $this->moduleRepository->deleteModule($id);
         return redirect()->route('modules.index')
             ->with('success', 'Module supprimé avec succès.');
+    }
+
+
+    /**
+     * Export modules
+     */
+    public function export()
+    {
+        return Excel::download(new ModulesExport, 'modules.xlsx');
     }
 }

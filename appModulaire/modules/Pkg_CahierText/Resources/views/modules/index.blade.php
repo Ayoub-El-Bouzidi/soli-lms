@@ -5,11 +5,20 @@
 @section('content_header')
     <div class="d-flex justify-content-between">
         <h1>Gestion des Modules</h1>
-        @role('responsable')
-            <a href="{{ route('modules.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Nouveau Module
-            </a>
-        @endrole
+        <div class="d-flex gap-2 align-items-center justify-content-between">
+            @role('responsable')
+                <a href="{{ route('modules.export') }}" class="btn btn-success">
+                    <i class="fas fa-file-excel"></i> Exporter
+                </a>
+            @endrole
+
+            @role('responsable')
+                <a href="{{ route('modules.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Nouveau Module
+                </a>
+            @endrole
+        </div>
+
     </div>
 @stop
 
@@ -17,7 +26,7 @@
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Liste des Modules</h3>
-            <div class="card-tools">
+            <div class="card-tools d-flex justify-content-between align-items-center">
                 <form action="{{ route('modules.index') }}" method="GET" class="form-inline">
                     <select name="groupe_id" class="form-control mr-2">
                         <option value="">Tous les groupes</option>
@@ -27,7 +36,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <button type="submit" class="btn btn-default">Filtrer</button>
+                    <button type="submit" class="btn btn-primary">Filtrer</button>
                 </form>
             </div>
         </div>
@@ -71,11 +80,12 @@
                                         <a href="{{ route('modules.show', $module) }}" class="btn btn-sm btn-info" title="Voir">
                                             <i class="fas fa-eye"></i>
                                         </a>
-
+                                        @role('responsable')
                                         <a href="{{ route('modules.edit', $module) }}" class="btn btn-sm btn-primary" title="Modifier">
                                             <i class="fas fa-edit"></i>
                                         </a>
-
+                                        @endrole
+                                        @role('responsable')
                                         <form action="{{ route('modules.destroy', $module) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
@@ -84,11 +94,11 @@
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
-
+                                        @endrole
                                         {{-- Cahier de texte button - Only show for formateurs and if hours remaining --}}
                                         @role('formateur')
                                             @if($module->heures_restees > 0)
-                                                <a href="{{ route('cahier.create', ['module_id' => $module->id]) }}"
+                                                <a href="{{ route('cahier-de-texte.create', ['module_id' => $module->id]) }}"
                                                    class="btn btn-sm btn-success" title="Cahier de texte">
                                                     <i class="fas fa-book"></i>
                                                 </a>

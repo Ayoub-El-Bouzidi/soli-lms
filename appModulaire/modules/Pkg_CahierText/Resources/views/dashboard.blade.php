@@ -196,6 +196,9 @@
                     </table>
                 </div>
             </div>
+            <div class="card-footer">
+                {{ $contenus->links() }}
+            </div>
         </div>
     </div>
 @stop

@@ -1,0 +1,105 @@
+<?php
+
+namespace Modules\Pkg_CahierText\Repositories;
+
+use Carbon\Carbon;
+use Modules\Pkg_CahierText\Models\CahierEntry;
+use Modules\Pkg_CahierText\Models\Module;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+class CahierEntryRepository
+{
+    public function getAllEntries(): LengthAwarePaginator
+    {
+        return CahierEntry::with('module')
+            ->orderBy('date', 'desc')
+            ->paginate(10);
+    }
+
+    public function getAvailableModules()
+    {
+        return Module::where('heures_restees', '>', 0)->get();
+    }
+
+    public function getModuleById(int $moduleId): Module
+    {
+        return Module::findOrFail($moduleId);
+    }
+
+    public function createEntry(array $data, int $formateurId): CahierEntry
+    {
+        $module = $this->getModuleById($data['module_id']);
+
+        if ($module->heures_restees <= 0) {
+            throw new \Exception('Ce module a déjà atteint sa masse horaire maximale.');
+        }
+
+        if ($data['heures_prevues'] > $module->heures_restees) {
+            throw new \Exception("Les heures prévues dépassent les heures restantes du module ({$module->heures_restees}h).");
+        }
+
+        $heureDebut = Carbon::createFromFormat('H:i', $data['heure_debut']);
+        $heureFin = $heureDebut->copy()
+            ->addHours((int)$data['heures_prevues'])
+            ->addMinutes(($data['heures_prevues'] * 60) % 60);
+
+        $entry = new CahierEntry($data);
+        $entry->formateur_id = $formateurId;
+        $entry->heure_debut = $heureDebut;
+        $entry->heure_fin = $heureFin;
+        $entry->save();
+
+        $this->updateModuleHours($module, $data['heures_prevues']);
+
+        return $entry;
+    }
+
+    public function updateEntry(CahierEntry $entry, array $data): CahierEntry
+    {
+        // Restore previous hours to the old module
+        $oldModule = $entry->module;
+        $this->restoreModuleHours($oldModule, $entry->heures_prevues);
+
+        // Check if new module has enough remaining hours
+        $newModule = $this->getModuleById($data['module_id']);
+        if ($data['heures_prevues'] > $newModule->heures_restees) {
+            throw new \Exception("Les heures prévues dépassent les heures restantes du module ({$newModule->heures_restees}h).");
+        }
+
+        $heureDebut = Carbon::createFromFormat('H:i', $data['heure_debut']);
+        $heureFin = $heureDebut->copy()
+            ->addHours((int)$data['heures_prevues'])
+            ->addMinutes(($data['heures_prevues'] * 60) % 60);
+
+        $entry->update(array_merge($data, [
+            'heure_debut' => $heureDebut,
+            'heure_fin' => $heureFin
+        ]));
+
+        $this->updateModuleHours($newModule, $data['heures_prevues']);
+
+        return $entry;
+    }
+
+    public function deleteEntry(CahierEntry $entry): bool
+    {
+        $module = $entry->module;
+        $this->restoreModuleHours($module, $entry->heures_prevues);
+
+        return $entry->delete();
+    }
+
+    private function updateModuleHours(Module $module, float $hours): void
+    {
+        $module->heures_terminees += $hours;
+        $module->heures_restees = max(0, $module->masse_horaire - $module->heures_terminees);
+        $module->save();
+    }
+
+    private function restoreModuleHours(Module $module, float $hours): void
+    {
+        $module->heures_terminees -= $hours;
+        $module->heures_restees = $module->masse_horaire - $module->heures_terminees;
+        $module->save();
+    }
+}

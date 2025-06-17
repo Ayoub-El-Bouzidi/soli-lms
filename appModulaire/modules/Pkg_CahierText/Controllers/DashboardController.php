@@ -84,6 +84,17 @@ class DashboardController extends Controller
             ];
         });
 
+        // Paginate the contents
+        $perPage = 5; // Number of items per page
+        $page = $request->get('page', 1);
+        $contenus = new \Illuminate\Pagination\LengthAwarePaginator(
+            $contenus->forPage($page, $perPage),
+            $contenus->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
         return view('Pkg_CahierText::dashboard', compact(
             'modulesTermines',
             'modulesRestants',
