@@ -20,12 +20,16 @@ class CahierEntryController extends Controller
 
     public function index()
     {
+        $formateurId = auth('formateurs')->id();
         $entries = $this->repository->getAllEntries();
-        return view('Pkg_CahierText::cahier.index', compact('entries'));
+        $groupes = $this->repository->getFormateurGroups($formateurId);
+
+        return view('Pkg_CahierText::cahier.index', compact('entries', 'groupes'));
     }
 
     public function create(Request $request)
     {
+        $formateurId = auth('formateurs')->id();
         $selectedModule = null;
 
         if ($request->has('module_id')) {
@@ -37,7 +41,7 @@ class CahierEntryController extends Controller
             }
         }
 
-        $modules = $this->repository->getAvailableModules();
+        $modules = $this->repository->getAvailableModules($formateurId);
 
         if ($modules->isEmpty()) {
             return redirect()->route('cahier-de-texte.index')
@@ -65,7 +69,8 @@ class CahierEntryController extends Controller
 
     public function edit(CahierEntry $entry)
     {
-        $modules = $this->repository->getAvailableModules();
+        $formateurId = auth('formateurs')->id();
+        $modules = $this->repository->getAvailableModules($formateurId);
         return view('Pkg_CahierText::cahier.edit', compact('entry', 'modules'));
     }
 
