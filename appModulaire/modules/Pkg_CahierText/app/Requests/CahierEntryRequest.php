@@ -11,7 +11,7 @@ class CahierEntryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth('formateurs')->check();
     }
 
     /**

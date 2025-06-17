@@ -13,7 +13,26 @@
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
-                        {{-- Hidden role field with default value --}}
+                        {{-- Role selection --}}
+                        {{--
+                        <div class="row mb-3">
+                            <label for="role" class="col-md-4 col-form-label text-md-end">{{ __('Role') }}</label>
+
+                            <div class="col-md-6">
+                                <select id="role" class="form-control @error('role') is-invalid @enderror" name="role" required>
+                                    <option value="web" {{ old('role') == 'web' ? 'selected' : '' }}>User</option>
+                                    <option value="formateurs" {{ old('role') == 'formateurs' ? 'selected' : '' }}>Formateur</option>
+                                    <option value="responsables" {{ old('role') == 'responsables' ? 'selected' : '' }}>Responsable</option>
+                                </select>
+
+                                @error('role')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        --}}
                         <input type="hidden" name="role" value="web">
 
                         <div class="row mb-3">

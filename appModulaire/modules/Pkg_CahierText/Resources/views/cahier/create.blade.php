@@ -9,7 +9,7 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('cahier.store') }}" method="POST">
+            <form action="{{ route('cahier-de-texte.store') }}" method="POST">
                 @csrf
 
                 <div class="row">
@@ -49,7 +49,7 @@
                             <label for="heures_prevues">Heures Prévues <span class="text-danger">*</span></label>
                             <input type="number" name="heures_prevues" id="heures_prevues"
                                 class="form-control @error('heures_prevues') is-invalid @enderror"
-                                value="{{ old('heures_prevues') }}" step="0.5" min="1" max="8" required>
+                                value="{{ old('heures_prevues') }}" step="0.5" min="1" required>
                             @error('heures_prevues')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -90,7 +90,7 @@
 
                 <div class="form-group mt-4">
                     <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    <a href="{{ route('cahier.index') }}" class="btn btn-secondary">Annuler</a>
+                    <a href="{{ route('cahier-de-texte.index') }}" class="btn btn-secondary">Annuler</a>
                 </div>
             </form>
         </div>

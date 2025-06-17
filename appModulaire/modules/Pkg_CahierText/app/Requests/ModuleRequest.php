@@ -11,7 +11,7 @@ class ModuleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user() && $this->user()->can('create_modules');
     }
 
     /**

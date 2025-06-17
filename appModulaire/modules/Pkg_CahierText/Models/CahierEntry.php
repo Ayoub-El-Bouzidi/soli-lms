@@ -4,6 +4,7 @@ namespace Modules\Pkg_CahierText\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class CahierEntry extends Model
 {
     protected $fillable = [
@@ -32,6 +33,6 @@ class CahierEntry extends Model
 
     public function formateur(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'formateur_id');
+        return $this->belongsTo(Formateur::class, 'formateur_id');
     }
 }

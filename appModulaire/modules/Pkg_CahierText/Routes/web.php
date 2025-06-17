@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
+use Modules\Pkg_CahierText\App\Exports\ModulesExport;
 use Modules\Pkg_CahierText\Controllers\DashboardController;
 use Modules\Pkg_CahierText\Controllers\ModuleController;
 use Modules\Pkg_CahierText\Controllers\CahierEntryController;
@@ -12,11 +14,14 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 Route::resource('modules', ModuleController::class);
 
 // Routes pour le cahier de texte
-Route::prefix('cahier-de-texte')->group(function () {
-    Route::get('/', [CahierEntryController::class, 'index'])->name('cahier.index');
-    Route::get('/create', [CahierEntryController::class, 'create'])->name('cahier.create');
-    Route::post('/', [CahierEntryController::class, 'store'])->name('cahier.store');
-    Route::get('/{entry}/edit', [CahierEntryController::class, 'edit'])->name('cahier.edit');
-    Route::put('/{entry}', [CahierEntryController::class, 'update'])->name('cahier.update');
-    Route::delete('/{entry}', [CahierEntryController::class, 'destroy'])->name('cahier.destroy');
+Route::prefix('cahier-de-texte')->middleware(['web', 'auth:formateurs'])->group(function () {
+    Route::get('/', [CahierEntryController::class, 'index'])->name('cahier-de-texte.index');
+    Route::get('/create', [CahierEntryController::class, 'create'])->name('cahier-de-texte.create');
+    Route::post('/', [CahierEntryController::class, 'store'])->name('cahier-de-texte.store');
+    Route::get('/{entry}/edit', [CahierEntryController::class, 'edit'])->name('cahier-de-texte.edit');
+    Route::put('/{entry}', [CahierEntryController::class, 'update'])->name('cahier-de-texte.update');
+    Route::delete('/{entry}', [CahierEntryController::class, 'destroy'])->name('cahier-de-texte.destroy');
 });
+
+// Export modules
+Route::get('/exportModules', [ModuleController::class, 'export'])->name('modules.export');

@@ -13,7 +13,7 @@
                 <i class="fas fa-table me-1"></i>
                 Mes Entrées
             </div>
-            <a href="{{ route('cahier.create') }}" class="btn btn-primary btn-sm">
+            <a href="{{ route('cahier-de-texte.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Nouvelle Entrée
             </a>
         </div>
@@ -48,10 +48,10 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('cahier.edit', $entry) }}" class="btn btn-sm btn-primary">
+                                <a href="{{ route('cahier-de-texte.edit', $entry) }}" class="btn btn-sm btn-primary">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('cahier.destroy', $entry) }}" method="POST" class="d-inline">
+                                <form action="{{ route('cahier-de-texte.destroy', $entry) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette entrée ?')">
