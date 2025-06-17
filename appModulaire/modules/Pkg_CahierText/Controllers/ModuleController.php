@@ -127,6 +127,6 @@ class ModuleController extends Controller
      */
     public function export()
     {
-        return Excel::download(new ModulesExport, 'modules.xlsx');
+        return Excel::download(new ModulesExport    , 'modules.xlsx');
     }
 }

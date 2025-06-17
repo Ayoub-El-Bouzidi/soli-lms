@@ -15,12 +15,12 @@ class GroupeFormateurSeeder extends Seeder
     public function run(): void
     {
         $groups = Groupe::pluck('id', 'nom')->toArray();
-           $tutors = Formateur::pluck('id', 'nom')->toArray();
+        $tutors = Formateur::pluck('id', 'nom')->toArray();
 
            // Assign main tutors to groups for the year
            $assignments = [
-               'DM101' => 'Imane',
-               'DW101' => 'Fouad',
+               'DM101' => 'Fouad',
+               'DW101' => 'Imane',
                'DW102' => 'Abdeouahab',
                'DW103' => 'Fatin',
                'DW104' => 'Abdeltif',

@@ -5,7 +5,9 @@ namespace Modules\Pkg_CahierText\Repositories;
 use Carbon\Carbon;
 use Modules\Pkg_CahierText\Models\CahierEntry;
 use Modules\Pkg_CahierText\Models\Module;
+use Modules\Pkg_CahierText\Models\Groupe;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class CahierEntryRepository
 {
@@ -16,9 +18,19 @@ class CahierEntryRepository
             ->paginate(10);
     }
 
-    public function getAvailableModules()
+    public function getFormateurGroups(int $formateurId): Collection
     {
-        return Module::where('heures_restees', '>', 0)->get();
+        return Groupe::whereHas('formateurs', function ($query) use ($formateurId) {
+            $query->where('formateurs.id', $formateurId);
+        })->get();
+    }
+
+    public function getAvailableModules(int $formateurId)
+    {
+        // Get modules from formateur's groups
+        return Module::whereHas('groupes.formateurs', function ($query) use ($formateurId) {
+            $query->where('formateurs.id', $formateurId);
+        })->where('heures_restees', '>', 0)->get();
     }
 
     public function getModuleById(int $moduleId): Module

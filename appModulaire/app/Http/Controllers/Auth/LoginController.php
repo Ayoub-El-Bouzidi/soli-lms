@@ -64,4 +64,13 @@ class LoginController extends Controller
             'role' => 'required|string|in:web,formateurs,responsables',
         ]);
     }
+
+    public function logout(Request $request)
+    {
+        $role = $request->input('role', 'web');
+        Auth::guard($role)->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');
+    }
 }

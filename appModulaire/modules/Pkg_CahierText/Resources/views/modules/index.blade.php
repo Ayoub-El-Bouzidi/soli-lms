@@ -99,7 +99,7 @@
                                         @role('formateur')
                                             @if($module->heures_restees > 0)
                                                 <a href="{{ route('cahier-de-texte.create', ['module_id' => $module->id]) }}"
-                                                   class="btn btn-sm btn-success" title="Cahier de texte">
+                                                    class="btn btn-sm btn-success" title="Cahier de texte">
                                                     <i class="fas fa-book"></i>
                                                 </a>
                                             @endif
