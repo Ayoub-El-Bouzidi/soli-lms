@@ -114,4 +114,12 @@ class CahierEntryRepository
         $module->heures_restees = $module->masse_horaire - $module->heures_terminees;
         $module->save();
     }
+
+    public function getEntriesByFormateur(int $formateurId): LengthAwarePaginator
+    {
+        return CahierEntry::with('module')
+            ->where('formateur_id', $formateurId)
+            ->orderBy('date', 'desc')
+            ->paginate(10);
+    }
 }

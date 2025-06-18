@@ -14,7 +14,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 Route::resource('modules', ModuleController::class);
 
 // Routes pour le cahier de texte
-Route::prefix('cahier-de-texte')->middleware(['web', 'auth:formateurs'])->group(function () {
+Route::prefix('cahier-de-texte')->middleware(['web', 'auth:formateurs,responsables'])->group(function () {
     Route::get('/', [CahierEntryController::class, 'index'])->name('cahier-de-texte.index');
     Route::get('/create', [CahierEntryController::class, 'create'])->name('cahier-de-texte.create');
     Route::post('/', [CahierEntryController::class, 'store'])->name('cahier-de-texte.store');

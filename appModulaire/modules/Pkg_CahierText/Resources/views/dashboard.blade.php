@@ -100,8 +100,8 @@
         <div class="col-lg-3 col-6">
             <div class="small-box bg-warning">
                 <div class="inner">
-                    <h3>{{ $seancesCount ?? 0 }}</h3>
-                    <p>Séances planifiées</p>
+                    <h3>{{ $cahierEntriesCount ?? 0 }}</h3>
+                    <p>Cahier Entries</p>
                 </div>
                 <div class="icon">
                     <i class="fas fa-calendar-alt"></i>
