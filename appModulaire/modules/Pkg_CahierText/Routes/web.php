@@ -25,3 +25,5 @@ Route::prefix('cahier-de-texte')->middleware(['web', 'auth:formateurs'])->group(
 
 // Export modules
 Route::get('/exportModules', [ModuleController::class, 'export'])->name('modules.export');
+// Export cahier entries
+Route::get('/exportCahierEntries', [CahierEntryController::class, 'export'])->name('cahier-de-texte.export');

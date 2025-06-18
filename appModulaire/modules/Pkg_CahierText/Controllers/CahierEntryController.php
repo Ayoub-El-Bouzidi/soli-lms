@@ -7,6 +7,7 @@ use Modules\Pkg_CahierText\app\Requests\CahierEntryRequest;
 use Modules\Pkg_CahierText\Models\CahierEntry;
 use Modules\Pkg_CahierText\Repositories\CahierEntryRepository;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CahierEntryController extends Controller
 {
@@ -108,5 +109,13 @@ class CahierEntryController extends Controller
             return back()->withInput()
                 ->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Export the cahier entries to an Excel file
+     */
+    public function export()
+    {
+        return Excel::download(new CahierEntry(), 'cahier_entries.xlsx');
     }
 }
