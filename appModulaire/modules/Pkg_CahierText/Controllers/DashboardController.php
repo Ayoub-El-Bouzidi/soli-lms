@@ -47,14 +47,14 @@ class DashboardController extends Controller
         $modulesTermines = (clone $query)->where('heures_restees', 0)->count();
         $modulesRestants = (clone $query)->where('heures_restees', '>', 0)->count();
 
-        // Count séances for the selected group or all groups
-        $seancesQuery = \Modules\Pkg_CahierText\Models\Seance::query();
+        // Count CahierEntries for the selected group or all groups
+        $cahierEntriesQuery = \Modules\Pkg_CahierText\Models\CahierEntry::query();
         if ($selectedGroupId) {
-            $seancesQuery->whereHas('seance_emploi.module.groupes', function ($q) use ($selectedGroupId) {
+            $cahierEntriesQuery->whereHas('module.groupes', function ($q) use ($selectedGroupId) {
                 $q->where('groupes.id', $selectedGroupId);
             });
         }
-        $seancesCount = $seancesQuery->count();
+        $cahierEntriesCount = $cahierEntriesQuery->count();
 
         // Get group count (this doesn't change with filtering)
         $groupesCount = $groupes->count();
@@ -98,7 +98,7 @@ class DashboardController extends Controller
         return view('Pkg_CahierText::dashboard', compact(
             'modulesTermines',
             'modulesRestants',
-            'seancesCount',
+            'cahierEntriesCount',
             'groupesCount',
             'contenus',
             'groupes',

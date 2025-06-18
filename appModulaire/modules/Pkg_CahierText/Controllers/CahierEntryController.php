@@ -15,16 +15,22 @@ class CahierEntryController extends Controller
 
     public function __construct(CahierEntryRepository $repository)
     {
-        $this->middleware('auth:formateurs');
+        $this->middleware(['auth:formateurs,responsables']);
         $this->repository = $repository;
     }
 
     public function index()
     {
-        $formateurId = auth('formateurs')->id();
-        $entries = $this->repository->getAllEntries();
-        $groupes = $this->repository->getFormateurGroups($formateurId);
-
+        if (auth('responsables')->check()) {
+            // Responsable: see all entries
+            $entries = $this->repository->getAllEntries();
+            $groupes = collect(); // Or fetch all groups if needed
+        } else {
+            // Formateur: see only their entries
+            $formateurId = auth('formateurs')->id();
+            $entries = $this->repository->getEntriesByFormateur($formateurId);
+            $groupes = $this->repository->getFormateurGroups($formateurId);
+        }
         return view('Pkg_CahierText::cahier.index', compact('entries', 'groupes'));
     }
 

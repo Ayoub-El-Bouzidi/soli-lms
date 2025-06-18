@@ -14,7 +14,7 @@
                         @csrf
 
                         {{-- Role selection --}}
-                        <div class="row mb-3">
+                        <div class="row mb-3 hidden d-none">
                             <label for="role" class="col-md-4 col-form-label text-md-end">{{ __('Role') }}</label>
 
                             <div class="col-md-6">
@@ -79,7 +79,7 @@
                                 </button>
 
                                 @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
+                                    <a class="btn btn-link d-none" href="{{ route('password.request') }}">
                                         {{ __('Forgot Your Password?') }}
                                     </a>
                                 @endif
