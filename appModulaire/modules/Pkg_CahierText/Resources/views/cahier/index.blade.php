@@ -8,7 +8,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-3">
+        {{-- <div class="col-md-3">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Mes Groupes</h3>
@@ -29,26 +29,33 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
-        <div class="col-md-9">
+        <div class="col-12">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Entrées du Cahier de Texte</h3>
                     <div class="card-tools">
+                        <a href="{{ route('cahier-de-texte.export') }}" class="btn btn-success btn-sm">
+                            <i class="fas fa-file-excel"></i> Exporter
+                        </a>
                         <a href="{{ route('cahier-de-texte.create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> Nouvelle Entrée
                         </a>
                     </div>
                 </div>
                 <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
+                    <div class="table-responsive" style="width: 100%;">
+                        <table class="table table-bordered table-striped w-100" style="width: 100%;">
                             <thead>
                                 <tr>
                                     <th>Date</th>
                                     <th>Module</th>
                                     <th>Heures</th>
+                                    <th>Heure de debut</th>
+                                    <th>Heure de fin</th>
+                                    <th>Contenu</th>
+                                    <th>Objectifs</th>
                                     <th>Statut</th>
                                     <th>Actions</th>
                                 </tr>
@@ -59,6 +66,10 @@
                                         <td>{{ $entry->date->format('d/m/Y') }}</td>
                                         <td>{{ $entry->module->nom }}</td>
                                         <td>{{ $entry->heures_prevues }}h</td>
+                                        <td>{{ $entry->heure_debut }}</td>
+                                        <td>{{ $entry->heure_fin }}</td>
+                                        <td>{{ $entry->contenu }}</td>
+                                        <td>{{ $entry->objectifs }}</td>
                                         <td>
                                             <span class="badge badge-{{ $entry->status === 'realise' ? 'success' : ($entry->status === 'planifie' ? 'info' : 'danger') }}">
                                                 {{ ucfirst($entry->status) }}
