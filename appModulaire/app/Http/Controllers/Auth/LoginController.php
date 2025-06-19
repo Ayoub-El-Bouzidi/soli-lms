@@ -43,6 +43,10 @@ class LoginController extends Controller
     protected function guard()
     {
         $role = request()->input('role', 'web');
+        $validGuards = ['web', 'formateurs', 'responsables'];
+        if (!in_array($role, $validGuards)) {
+            $role = 'web';
+        }
         return Auth::guard($role);
     }
 
@@ -72,5 +76,14 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/');
+    }
+
+    protected function attemptLogin(Request $request)
+    {
+        $guard = $request->input('role', 'web'); // Default to web if role is missing
+        return Auth::guard($guard)->attempt(
+            $this->credentials($request),
+            $request->filled('remember')
+        );
     }
 }

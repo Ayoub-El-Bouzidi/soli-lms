@@ -177,9 +177,9 @@
                                         <td>{{ e($contenu['nom'] ?? 'N/A') }}</td>
                                         <td>{{ $contenu['masse_horaire'] ?? 0 }}</td>
                                         <td>{{ $contenu['heures_terminees'] }}</td>
-                                        <td>{{ $contenu['heures_restantes'] ?? 0 }}</td>
+                                        <td>{{ $contenu['heures_restees'] ?? 0 }}</td>
                                         <td>
-                                            @if (($contenu['etat'] ?? '') === 'terminé')
+                                            @if ($contenu['heures_restees'] == 0)
                                                 <span class="badge bg-success">Terminé</span>
                                             @else
                                                 <span class="badge bg-warning text-dark">En cours</span>
