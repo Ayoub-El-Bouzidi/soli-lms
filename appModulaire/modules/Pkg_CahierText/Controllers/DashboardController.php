@@ -7,6 +7,8 @@ use Illuminate\Routing\Controller;
 use Modules\Pkg_CahierText\Repositories\ModuleRepository;
 use Modules\Pkg_CahierText\Repositories\SeanceRepository;
 use Modules\Pkg_CahierText\Repositories\GroupeRepository;
+use Modules\Pkg_CahierText\Models\Module;
+use Modules\Pkg_CahierText\Models\CahierEntry;
 
 class DashboardController extends Controller
 {
@@ -38,7 +40,7 @@ class DashboardController extends Controller
             : $this->moduleRepository->getAllModules();
 
         // Compter les modules terminés et restants (filtered by group if selected)
-        $query = \Modules\Pkg_CahierText\Models\Module::query();
+        $query = Module::query();
         if ($selectedGroupId) {
             $query->whereHas('groupes', function ($q) use ($selectedGroupId) {
                 $q->where('groupes.id', $selectedGroupId);
@@ -48,7 +50,7 @@ class DashboardController extends Controller
         $modulesRestants = (clone $query)->where('heures_restees', '>', 0)->count();
 
         // Count CahierEntries for the selected group or all groups
-        $cahierEntriesQuery = \Modules\Pkg_CahierText\Models\CahierEntry::query();
+        $cahierEntriesQuery = CahierEntry::query();
         if ($selectedGroupId) {
             $cahierEntriesQuery->whereHas('module.groupes', function ($q) use ($selectedGroupId) {
                 $q->where('groupes.id', $selectedGroupId);
@@ -61,26 +63,13 @@ class DashboardController extends Controller
 
         // Préparer les contenus pour l'affichage
         $contenus = collect($modules)->map(function ($module) {
-            // S'assurer que $module est un objet
             $module = (object) $module;
-
-            // Charger les séances liées (si relation "seances" définie dans Module.php)
-            $seances = isset($module->seances) && is_iterable($module->seances)
-                ? collect($module->seances)
-                : collect();
-
-            // Calcul des heures
-            $heuresTerminees = $seances->sum('duree');
-            $masseHoraire = $module->masse_horaire ?? 0;
-            $heuresRestantes = max(0, $masseHoraire - $heuresTerminees);
-            $etat = $heuresRestantes <= 0 ? 'terminé' : 'en cours';
-
             return [
                 'nom' => $module->nom ?? '',
-                'masse_horaire' => $masseHoraire,
-                'heures_terminees' => $heuresTerminees,
-                'heures_restantes' => $heuresRestantes,
-                'etat' => $etat,
+                'masse_horaire' => $module->masse_horaire ?? 0,
+                'heures_terminees' => $module->heures_terminees ?? 0,
+                'heures_restees' => $module->heures_restees ?? 0,
+                'etat' => ($module->heures_restees ?? 0) <= 0 ? 'terminé' : 'en cours',
             ];
         });
 
