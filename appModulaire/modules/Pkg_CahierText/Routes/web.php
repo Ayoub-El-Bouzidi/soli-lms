@@ -18,6 +18,7 @@ Route::prefix('cahier-de-texte')->middleware(['web', 'auth:formateurs,responsabl
     Route::get('/', [CahierEntryController::class, 'index'])->name('cahier-de-texte.index');
     Route::get('/create', [CahierEntryController::class, 'create'])->name('cahier-de-texte.create');
     Route::post('/', [CahierEntryController::class, 'store'])->name('cahier-de-texte.store');
+    Route::post('/from-seance-emploi', [CahierEntryController::class, 'createFromSeanceEmploi'])->name('cahier-de-texte.from-seance-emploi');
     Route::get('/{entry}/edit', [CahierEntryController::class, 'edit'])->name('cahier-de-texte.edit');
     Route::put('/{entry}', [CahierEntryController::class, 'update'])->name('cahier-de-texte.update');
     Route::delete('/{entry}', [CahierEntryController::class, 'destroy'])->name('cahier-de-texte.destroy');
