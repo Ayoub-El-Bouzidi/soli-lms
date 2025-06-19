@@ -15,7 +15,7 @@ class CahierEntryRepository
     {
         return CahierEntry::with('module')
             ->orderBy('date', 'desc')
-            ->paginate(10);
+            ->paginate(10)->count();
     }
 
     public function getFormateurGroups(int $formateurId): Collection

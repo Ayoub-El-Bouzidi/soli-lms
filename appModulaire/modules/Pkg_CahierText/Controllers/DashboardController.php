@@ -105,4 +105,14 @@ class DashboardController extends Controller
             'selectedGroupId'
         ));
     }
+    public function responsableDashboard(Request $request)
+    {
+        // For now, reuse the index logic for responsables
+        return $this->index($request);
+    }
+    public function formateurDashboard(Request $request)
+    {
+        // For now, reuse the index logic for formateurs
+        return $this->index($request);
+    }
 }

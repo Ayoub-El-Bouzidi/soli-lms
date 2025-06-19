@@ -33,7 +33,7 @@
     $responsable = Auth::guard('responsables')->user();
 @endphp
 
-@if($formateur)
+{{-- @if($formateur)
     <li class="nav-item dropdown user-menu">
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
             <span class="d-none d-md-inline">{{ $formateur->nom }} {{ $formateur->prenom }}</span>
@@ -62,7 +62,7 @@
         </ul>
     </li>
 @endif
-
+ --}}
     <div class="row">
         <!-- Modules terminés -->
         <div class="col-lg-3 col-6">
