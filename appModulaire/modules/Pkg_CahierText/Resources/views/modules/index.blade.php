@@ -96,14 +96,14 @@
                                         </form>
                                         @endrole
                                         {{-- Cahier de texte button - Only show for formateurs and if hours remaining --}}
-                                        @role('formateur')
+                                        @if(Auth::guard('formateurs')->check())
                                             @if($module->heures_restees > 0)
                                                 <a href="{{ route('cahier-de-texte.create', ['module_id' => $module->id]) }}"
                                                     class="btn btn-sm btn-success" title="Cahier de texte">
                                                     <i class="fas fa-book"></i>
                                                 </a>
                                             @endif
-                                        @endrole
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

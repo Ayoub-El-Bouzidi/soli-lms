@@ -9,61 +9,48 @@ use Modules\Pkg_CahierText\Repositories\SeanceRepository;
 use Modules\Pkg_CahierText\Repositories\GroupeRepository;
 use Modules\Pkg_CahierText\Models\Module;
 use Modules\Pkg_CahierText\Models\CahierEntry;
+use Illuminate\Support\Facades\Auth;
+use Modules\Pkg_CahierText\Repositories\CahierEntryRepository;
 
 class DashboardController extends Controller
 {
+    protected $cahierEntryRepository;
     protected $moduleRepository;
     protected $seanceRepository;
     protected $groupeRepository;
 
     public function __construct(
+        CahierEntryRepository $cahierEntryRepository,
         ModuleRepository $moduleRepository,
         SeanceRepository $seanceRepository,
         GroupeRepository $groupeRepository
     ) {
+        $this->cahierEntryRepository = $cahierEntryRepository;
         $this->moduleRepository = $moduleRepository;
         $this->seanceRepository = $seanceRepository;
         $this->groupeRepository = $groupeRepository;
     }
 
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
-        // Get the selected group ID from the request
-        $selectedGroupId = $request->query('groupe_id');
+        $user = Auth::user();
+        $selectedGroupId = $request->input('groupe_id');
 
-        // Get all groups for the filter dropdown
         $groupes = $this->groupeRepository->getAllGroupes();
 
-        // Filter modules by group if selected
         $modules = $selectedGroupId
             ? $this->moduleRepository->getModulesByGroup($selectedGroupId)
             : $this->moduleRepository->getAllModules();
 
-        // Compter les modules terminés et restants (filtered by group if selected)
-        $query = Module::query();
-        if ($selectedGroupId) {
-            $query->whereHas('groupes', function ($q) use ($selectedGroupId) {
-                $q->where('groupes.id', $selectedGroupId);
-            });
-        }
-        $modulesTermines = (clone $query)->where('heures_restees', 0)->count();
-        $modulesRestants = (clone $query)->where('heures_restees', '>', 0)->count();
-
-        // Count CahierEntries for the selected group or all groups
-        $cahierEntriesQuery = CahierEntry::query();
-        if ($selectedGroupId) {
-            $cahierEntriesQuery->whereHas('module.groupes', function ($q) use ($selectedGroupId) {
-                $q->where('groupes.id', $selectedGroupId);
-            });
-        }
-        $cahierEntriesCount = $cahierEntriesQuery->count();
-
-        // Get group count (this doesn't change with filtering)
+        $modulesTermines = $modules->where('heures_restees', '<=', 0)->count();
+        $modulesRestants = $modules->where('heures_restees', '>', 0)->count();
+        $cahierEntriesCount = CahierEntry::count();
         $groupesCount = $groupes->count();
 
-        // Préparer les contenus pour l'affichage
         $contenus = collect($modules)->map(function ($module) {
-            $module = (object) $module;
             return [
                 'nom' => $module->nom ?? '',
                 'masse_horaire' => $module->masse_horaire ?? 0,
@@ -73,8 +60,7 @@ class DashboardController extends Controller
             ];
         });
 
-        // Paginate the contents
-        $perPage = 5; // Number of items per page
+        $perPage = 5;
         $page = $request->get('page', 1);
         $contenus = new \Illuminate\Pagination\LengthAwarePaginator(
             $contenus->forPage($page, $perPage),

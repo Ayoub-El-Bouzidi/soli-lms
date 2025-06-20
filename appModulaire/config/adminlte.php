@@ -331,12 +331,12 @@ return [
                 [
                     'text' => 'Cahier de texte',
                     'icon' => 'fas fa-clipboard',
-                    'route' => 'cahier-de-texte.index', // ✅ correct
+                    'route' => 'cahier-de-texte.index',
                 ],
                 [
                     'text' => 'Les modules',
                     'icon' => 'fas fa-book',
-                    'route' => 'modules.index', // ✅ correct
+                    'route' => 'modules.index',
                 ],
 
             ],

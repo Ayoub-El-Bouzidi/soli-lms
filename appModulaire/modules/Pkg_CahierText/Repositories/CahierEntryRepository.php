@@ -13,9 +13,9 @@ class CahierEntryRepository
 {
     public function getAllEntries(): LengthAwarePaginator
     {
-        return CahierEntry::with('module')
+        return CahierEntry::with('module.groupes', 'formateur')
             ->orderBy('date', 'desc')
-            ->paginate(10)->count();
+            ->paginate(10);
     }
 
     public function getFormateurGroups(int $formateurId): Collection
@@ -117,7 +117,7 @@ class CahierEntryRepository
 
     public function getEntriesByFormateur(int $formateurId): LengthAwarePaginator
     {
-        return CahierEntry::with('module')
+        return CahierEntry::with(['module', 'formateur.groupes'])
             ->where('formateur_id', $formateurId)
             ->orderBy('date', 'desc')
             ->paginate(10);

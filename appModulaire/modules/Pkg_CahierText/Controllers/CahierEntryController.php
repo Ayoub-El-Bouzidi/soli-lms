@@ -41,19 +41,9 @@ class CahierEntryController extends Controller
 
         if ($request->has('module_id')) {
             $selectedModule = $this->repository->getModuleById($request->module_id);
-
-            if ($selectedModule->heures_restees <= 0) {
-                return redirect()->route('cahier-de-texte.index')
-                    ->with('error', 'Ce module a déjà atteint sa masse horaire maximale.');
-            }
         }
 
         $modules = $this->repository->getAvailableModules($formateurId);
-
-        if ($modules->isEmpty()) {
-            return redirect()->route('cahier-de-texte.index')
-                ->with('error', 'Aucun module disponible pour créer une entrée.');
-        }
 
         return view('Pkg_CahierText::cahier.create', compact('modules', 'selectedModule'));
     }

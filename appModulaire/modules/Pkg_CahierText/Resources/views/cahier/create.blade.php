@@ -9,89 +9,96 @@
 @section('content')
     <div class="card">
         <div class="card-body">
+            @if($modules->isEmpty())
+                <div class="alert alert-warning" role="alert">
+                    <strong>Attention:</strong> Vous n'avez aucun module disponible pour lequel créer une entrée. Veuillez contacter un administrateur.
+                </div>
+            @endif
+
             <form action="{{ route('cahier-de-texte.store') }}" method="POST">
                 @csrf
+                <fieldset @if($modules->isEmpty()) disabled @endif>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="module_id">Module <span class="text-danger">*</span></label>
+                                <select name="module_id" id="module_id" class="form-control select2 @error('module_id') is-invalid @enderror" required>
+                                    <option value="">Sélectionner un module</option>
+                                    @foreach($modules as $module)
+                                        <option value="{{ $module->id }}"
+                                            {{ old('module_id', $selectedModule?->id) == $module->id ? 'selected' : '' }}>
+                                            {{ $module->nom }} ({{ $module->heures_restees }}h restantes)
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('module_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="module_id">Module <span class="text-danger">*</span></label>
-                            <select name="module_id" id="module_id" class="form-control select2 @error('module_id') is-invalid @enderror" required>
-                                <option value="">Sélectionner un module</option>
-                                @foreach($modules as $module)
-                                    <option value="{{ $module->id }}"
-                                        {{ old('module_id', $selectedModule?->id) == $module->id ? 'selected' : '' }}>
-                                        {{ $module->nom }} ({{ $module->heures_restees }}h restantes)
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('module_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="date">Date <span class="text-danger">*</span></label>
+                                <input type="date" name="date" id="date" class="form-control @error('date') is-invalid @enderror"
+                                    value="{{ old('date', date('Y-m-d')) }}" required>
+                                @error('date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="date">Date <span class="text-danger">*</span></label>
-                            <input type="date" name="date" id="date" class="form-control @error('date') is-invalid @enderror"
-                                value="{{ old('date', date('Y-m-d')) }}" required>
-                            @error('date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="heures_prevues">Heures Prévues <span class="text-danger">*</span></label>
+                                <input type="number" name="heures_prevues" id="heures_prevues"
+                                    class="form-control @error('heures_prevues') is-invalid @enderror"
+                                    value="{{ old('heures_prevues') }}" step="0.5" min="1" required>
+                                @error('heures_prevues')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="heure_debut">Heure de Début <span class="text-danger">*</span></label>
+                                <input type="time" name="heure_debut" id="heure_debut"
+                                    class="form-control @error('heure_debut') is-invalid @enderror"
+                                    value="{{ old('heure_debut') }}" required>
+                                @error('heure_debut')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Heure de fin calculée: <span id="heure_fin_display">--:--</span></small>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="heures_prevues">Heures Prévues <span class="text-danger">*</span></label>
-                            <input type="number" name="heures_prevues" id="heures_prevues"
-                                class="form-control @error('heures_prevues') is-invalid @enderror"
-                                value="{{ old('heures_prevues') }}" step="0.5" min="1" required>
-                            @error('heures_prevues')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                    <div class="form-group">
+                        <label for="contenu">Contenu</label>
+                        <textarea name="contenu" id="contenu" rows="4"
+                            class="form-control @error('contenu') is-invalid @enderror">{{ old('contenu') }}</textarea>
+                        @error('contenu')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="heure_debut">Heure de Début <span class="text-danger">*</span></label>
-                            <input type="time" name="heure_debut" id="heure_debut"
-                                class="form-control @error('heure_debut') is-invalid @enderror"
-                                value="{{ old('heure_debut') }}" required>
-                            @error('heure_debut')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="text-muted">Heure de fin calculée: <span id="heure_fin_display">--:--</span></small>
-                        </div>
+                    <div class="form-group">
+                        <label for="objectifs">Objectifs</label>
+                        <textarea name="objectifs" id="objectifs" rows="4"
+                            class="form-control @error('objectifs') is-invalid @enderror">{{ old('objectifs') }}</textarea>
+                        @error('objectifs')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="contenu">Contenu</label>
-                    <textarea name="contenu" id="contenu" rows="4"
-                        class="form-control @error('contenu') is-invalid @enderror">{{ old('contenu') }}</textarea>
-                    @error('contenu')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="objectifs">Objectifs</label>
-                    <textarea name="objectifs" id="objectifs" rows="4"
-                        class="form-control @error('objectifs') is-invalid @enderror">{{ old('objectifs') }}</textarea>
-                    @error('objectifs')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-group mt-4">
-                    <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    <a href="{{ route('cahier-de-texte.index') }}" class="btn btn-secondary">Annuler</a>
-                </div>
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        <a href="{{ route('cahier-de-texte.index') }}" class="btn btn-secondary">Annuler</a>
+                    </div>
+                </fieldset>
             </form>
         </div>
     </div>

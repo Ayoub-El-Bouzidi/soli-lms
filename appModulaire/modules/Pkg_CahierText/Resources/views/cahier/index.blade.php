@@ -8,29 +8,6 @@
 
 @section('content')
     <div class="row">
-        {{-- <div class="col-md-3">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Mes Groupes</h3>
-                </div>
-                <div class="card-body p-0">
-                    <ul class="nav nav-pills flex-column">
-                        @forelse($groupes as $groupe)
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="fas fa-users"></i> {{ $groupe->name }}
-                                </a>
-                            </li>
-                        @empty
-                            <li class="nav-item">
-                                <span class="nav-link text-muted">Aucun groupe assigné</span>
-                            </li>
-                        @endforelse
-                    </ul>
-                </div>
-            </div>
-        </div> --}}
-
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
@@ -49,8 +26,10 @@
                         <table class="table table-bordered table-striped w-100" style="width: 100%;">
                             <thead>
                                 <tr>
+                                    <th>Formateur</th>
                                     <th>Date</th>
                                     <th>Module</th>
+                                    <th>Groupe(s)</th>
                                     <th>Heures</th>
                                     <th>Heure de debut</th>
                                     <th>Heure de fin</th>
@@ -63,8 +42,16 @@
                             <tbody>
                                 @forelse($entries as $entry)
                                     <tr>
+                                        <td>{{ $entry->formateur->nom ?? '' }} {{ $entry->formateur->prenom ?? '' }}</td>
                                         <td>{{ $entry->date->format('d/m/Y') }}</td>
                                         <td>{{ $entry->module->nom }}</td>
+                                        <td>
+                                            @if($entry->formateur)
+                                                @foreach($entry->formateur->groupes as $groupe)
+                                                    <span class="badge badge-info">{{ $groupe->nom }}</span>
+                                                @endforeach
+                                            @endif
+                                        </td>
                                         <td>{{ $entry->heures_prevues }}h</td>
                                         <td>{{ $entry->heure_debut }}</td>
                                         <td>{{ $entry->heure_fin }}</td>
@@ -90,7 +77,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center">Aucune entrée trouvée</td>
+                                        <td colspan="6" class="text-center">Aucune entrée trouvée</td>
                                     </tr>
                                 @endforelse
                             </tbody>

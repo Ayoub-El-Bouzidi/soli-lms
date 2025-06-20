@@ -50,16 +50,6 @@ class LoginController extends Controller
         return Auth::guard($role);
     }
 
-    protected function authenticated(Request $request, $user)
-    {
-        if ($request->input('role') === 'formateurs') {
-            return redirect()->route('formateur.dashboard');
-        } elseif ($request->input('role') === 'responsables') {
-            return redirect()->route('responsable.dashboard');
-        }
-        return redirect()->route('dashboard');
-    }
-
     protected function validateLogin(Request $request)
     {
         $request->validate([
@@ -67,6 +57,20 @@ class LoginController extends Controller
             'password' => 'required|string',
             'role' => 'required|string|in:web,formateurs,responsables',
         ]);
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        if ($request->input('role') === 'formateurs') {
+            Auth::guard('formateurs')->login($user);
+            $request->session()->regenerate();
+            return redirect()->route('formateur.dashboard');
+        } elseif ($request->input('role') === 'responsables') {
+            Auth::guard('responsables')->login($user);
+            $request->session()->regenerate();
+            return redirect()->route('responsable.dashboard');
+        }
+        return redirect()->route('dashboard');
     }
 
     public function logout(Request $request)

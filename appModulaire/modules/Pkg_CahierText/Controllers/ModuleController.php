@@ -12,23 +12,11 @@ use Modules\Pkg_CahierText\Models\Groupe;
 
 class ModuleController extends Controller
 {
+    protected $repository;
 
-    // public function __construct()
-    // {
-    //     $this->middleware('permission:view_cahier')->only(['index']);
-    //     $this->middleware('permission:create_cahier')->only(['create', 'store']);
-    //     $this->middleware('permission:edit_cahier')->only(['edit', 'update']);
-    //     $this->middleware('permission:delete_cahier')->only(['destroy']);
-    // }
-    protected $moduleRepository;
-
-    public function __construct(ModuleRepository $moduleRepository)
+    public function __construct(ModuleRepository $repository)
     {
-        $this->moduleRepository = $moduleRepository;
-        $this->middleware('permission:create_modules')->only(['create', 'store']);
-        $this->middleware('permission:view_modules')->only(['index', 'show']);
-        $this->middleware('permission:edit_modules')->only(['edit', 'update']);
-        $this->middleware('permission:delete_modules')->only(['destroy']);
+        $this->repository = $repository;
     }
 
     /**
@@ -37,7 +25,7 @@ class ModuleController extends Controller
     public function index(Request $request)
     {
         $groupId = $request->query('groupe_id');
-        $modules = $this->moduleRepository->getModulesByGroup($groupId);
+        $modules = $this->repository->getModulesByGroup($groupId);
         $groupes = Groupe::all();
 
         return view('Pkg_CahierText::modules.index', [
@@ -64,7 +52,7 @@ class ModuleController extends Controller
         $request->validated();
 
         $data = $request->all();
-        $module = $this->moduleRepository->createModule($data);
+        $module = $this->repository->createModule($data);
 
         if ($request->has('groupes')) {
             $module->groupes()->sync($request->groupes);
@@ -79,7 +67,7 @@ class ModuleController extends Controller
      */
     public function show(string $id)
     {
-        $module = $this->moduleRepository->getModuleById($id);
+        $module = $this->repository->getModuleById($id);
         return view('Pkg_CahierText::modules.show', compact('module'));
     }
 
@@ -88,7 +76,7 @@ class ModuleController extends Controller
      */
     public function edit(string $id)
     {
-        $module = $this->moduleRepository->getModuleById($id);
+        $module = $this->repository->getModuleById($id);
         $groupes = Groupe::all();
         return view('Pkg_CahierText::modules.edit', compact('module', 'groupes'));
     }
@@ -101,7 +89,7 @@ class ModuleController extends Controller
         $request->validated();
 
         $data = $request->all();
-        $module = $this->moduleRepository->updateModule($id, $data);
+        $module = $this->repository->updateModule($id, $data);
 
         if ($request->has('groupes')) {
             $module->groupes()->sync($request->groupes);
@@ -116,7 +104,7 @@ class ModuleController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->moduleRepository->deleteModule($id);
+        $this->repository->deleteModule($id);
         return redirect()->route('modules.index')
             ->with('success', 'Module supprimé avec succès.');
     }
@@ -127,6 +115,6 @@ class ModuleController extends Controller
      */
     public function export()
     {
-        return Excel::download(new ModulesExport    , 'modules.xlsx');
+        return Excel::download(new ModulesExport, 'modules.xlsx');
     }
 }
