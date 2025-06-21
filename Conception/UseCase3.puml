@@ -1,0 +1,63 @@
+@startuml LMS_Use_Cases
+
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam usecaseStyle roundbox
+
+' Actors
+actor "Formateur" as F
+actor "Responsable" as R
+
+' Use Cases
+rectangle "Cahier de Texte sprint 3" {
+    ' Authentication
+    usecase "Login" as UC1
+    usecase "Logout" as UC2
+
+    ' Module Management
+    usecase "View Modules" as UC3
+    usecase "Create Module" as UC4
+    usecase "Edit Module" as UC5
+    usecase "Delete Module" as UC6
+
+    ' Cahier de Texte
+    usecase "Create Cahier Entry" as UC7
+    usecase "View Cahier Entries" as UC8
+    usecase "Edit Cahier Entry" as UC9
+
+    ' Groupe Management
+    usecase "View Groupes" as UC10
+
+    ' Dashboard
+    usecase "View Dashboard" as UC12
+    usecase "Filter by Groupe" as UC13
+}
+
+' Formateur Use Cases
+F --> UC1
+F --> UC2
+F --> UC3
+F --> UC7
+F --> UC8
+F --> UC9
+F --> UC10
+F --> UC12
+F --> UC13
+
+' Responsable Use Cases
+R --> UC1
+R --> UC2
+R --> UC3
+R --> UC4
+R --> UC5
+R --> UC6
+R --> UC8
+R --> UC10
+R --> UC12
+R --> UC13
+
+' Valid Relationships
+UC9 ..> UC8 : <<include>>  ' Editing likely requires viewing
+UC13 ..> UC12 : <<include>>  ' Filtering is part of dashboard
+
+@enduml

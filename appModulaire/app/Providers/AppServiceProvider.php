@@ -4,6 +4,8 @@ namespace App\Providers;
 
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Auth;
 
 use Modules\Pkg_CahierText\app\Providers\CahierTextServiceProvider;
 use Modules\Pkg_Emploi\app\Providers\EmploiServiceProvider;
@@ -38,6 +40,60 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->loadViewsFrom(
+            base_path('appModulaire/modules/Pkg_CahierText/Resources/views'),
+            'cahier'
+        );
+
+        // Custom Blade directive for multi-guard role checking
+        Blade::directive('role', function ($role) {
+            return "<?php
+                \$guard = session('auth.guard', 'web');
+                \$user = app('auth')->guard(\$guard)->user();
+                \$hasRole = false;
+
+                if (\$user) {
+                    // Check if the current user has the role
+                    \$hasRole = \$user->hasRole({$role});
+
+                    // If not, and it's a multi-guard user, check the User model
+                    if (!\$hasRole && (\$guard === 'formateurs' || \$guard === 'responsables')) {
+                        \$userModel = \App\Models\User::find(\$user->user_id ?? \$user->id);
+                        if (\$userModel) {
+                            \$hasRole = \$userModel->hasRole({$role});
+                        }
+                    }
+                }
+
+                if (\$hasRole):
+            ?>";
+        });
+
+        Blade::directive('endrole', function () {
+            return "<?php endif; ?>";
+        });
+
+        // Add a helper function for role checking
+        \Illuminate\Support\Facades\Blade::if('hasRole', function ($role) {
+            $guard = session('auth.guard', 'web');
+            $user = app('auth')->guard($guard)->user();
+
+            if ($user) {
+                // Check if the current user has the role
+                if ($user->hasRole($role)) {
+                    return true;
+                }
+
+                // If not, and it's a multi-guard user, check the User model
+                if ($guard === 'formateurs' || $guard === 'responsables') {
+                    $userModel = \App\Models\User::find($user->user_id ?? $user->id);
+                    if ($userModel && $userModel->hasRole($role)) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        });
     }
 }

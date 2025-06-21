@@ -2,41 +2,56 @@
 
 namespace Modules\Pkg_CahierText\Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Modules\Pkg_CahierText\Models\Formateur;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class FormateurSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run()
+    public function run(): void
     {
-        $users = User::pluck('id')->toArray();
-        if (empty($users)) {
-            return; // Exit if no users exist
-        }
-
         $tutors = [
-            ['nom' => 'Imane', 'prenom' => '', 'email' => 'imane@example.com', 'password' => bcrypt('password')],
-            ['nom' => 'Fouad', 'prenom' => '', 'email' => 'fouad@example.com', 'password' => bcrypt('password')],
-            ['nom' => 'Abdeouahab', 'prenom' => '', 'email' => 'abdeouahab@example.com', 'password' => bcrypt('password')],
-            ['nom' => 'Fatin', 'prenom' => 'Chebab', 'email' => 'fatin@example.com', 'password' => bcrypt('password')],
-            ['nom' => 'Abdeltif', 'prenom' => '', 'email' => 'abdeltif@example.com', 'password' => bcrypt('password')],
-            ['nom' => 'Firdaous', 'prenom' => 'John', 'email' => 'john.smith@example.com', 'password' => bcrypt('password')], // English tutor
-            ['nom' => 'Amin', 'prenom' => 'Jane', 'email' => 'jane.doe@example.com', 'password' => bcrypt('password')], // Soft Skills tutor
+            ['nom' => 'Imane', 'prenom' => 'Bouziane', 'email' => 'imane@example.com'],
+            ['nom' => 'Fouad', 'prenom' => 'Esseraj', 'email' => 'fouad@example.com'],
+            ['nom' => 'Abdeouahab', 'prenom' => 'Souklabi', 'email' => 'abdeouahab@example.com'],
+            ['nom' => 'Fatin', 'prenom' => 'Chebab', 'email' => 'fatin@example.com'],
+            ['nom' => 'Abdeltif', 'prenom' => 'Souklabi', 'email' => 'abdeltif@example.com'],
+            ['nom' => 'Firdaous', 'prenom' => 'John', 'email' => 'john.smith@example.com'],
+            ['nom' => 'Amin', 'prenom' => 'Jane', 'email' => 'jane.doe@example.com'],
         ];
 
         foreach ($tutors as $tutor) {
-            Formateur::create([
-                'user_id' => $users[array_rand($users)],
-                'nom' => $tutor['nom'],
-                'prenom' => $tutor['prenom'],
-                'email' => $tutor['email'],
-                'password' => $tutor['password'],
-            ]);
+            // Create or update the user
+            $user = User::firstOrCreate(
+                ['email' => $tutor['email']],
+                [
+                    'name' => $tutor['nom'] . ' ' . $tutor['prenom'],
+                    'password' => Hash::make('password'),
+                ]
+            );
+
+            // Assign 'formateur' role to user
+            if (!$user->hasRole('formateur')) {
+                $user->assignRole('formateur');
+            }
+
+            // Create formateur profile
+            $formateur = Formateur::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'nom' => $tutor['nom'],
+                    'prenom' => $tutor['prenom'],
+                    'email' => $tutor['email'],
+                    'password' => $user->password,
+                ]
+            );
+
+            // Also assign 'formateur' role to the Formateur model
+            if (!$formateur->hasRole('formateur')) {
+                $formateur->assignRole('formateur');
+            }
         }
     }
 }

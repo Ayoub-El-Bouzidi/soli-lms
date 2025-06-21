@@ -3,7 +3,7 @@
 namespace Modules\Pkg_CahierText\app\Policies;
 
 use App\Models\User;
-use Modules\Pkg_CahierText\app\Models\CahierEntry;
+use Modules\Pkg_CahierText\Models\CahierEntry;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CahierEntryPolicy
@@ -12,26 +12,26 @@ class CahierEntryPolicy
 
     public function viewAny(User $user)
     {
-        return $user->hasRole('formateur');
+        return $user->hasRole('formateur') || $user->hasRole('responsable');
     }
 
     public function view(User $user, CahierEntry $entry)
     {
-        return $user->id === $entry->formateur_id;
+        return $user->hasRole('responsable') || $user->id === $entry->formateur_id;
     }
 
     public function create(User $user)
     {
-        return $user->hasRole('formateur');
+        return $user->hasRole('formateur') || $user->hasRole('responsable');
     }
 
     public function update(User $user, CahierEntry $entry)
     {
-        return $user->id === $entry->formateur_id;
+        return $user->hasRole('responsable') || $user->id === $entry->formateur_id;
     }
 
     public function delete(User $user, CahierEntry $entry)
     {
-        return $user->id === $entry->formateur_id;
+        return $user->hasRole('responsable') || $user->id === $entry->formateur_id;
     }
 }

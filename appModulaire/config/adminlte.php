@@ -313,7 +313,7 @@ return [
         ],
         [
             'text' => 'Dashboard',
-            'url' => '/',
+            'route' => 'dashboard',
             'icon' => 'fas fa-tachometer-alt',
             'label' => 4,
             'label_color' => 'success',
@@ -331,10 +331,15 @@ return [
                 [
                     'text' => 'Cahier de texte',
                     'icon' => 'fas fa-clipboard',
-                    'route' => 'modules.index', // ✅ correct
+                    'route' => 'cahier-de-texte.index',
+                ],
+                [
+                    'text' => 'Les modules',
+                    'icon' => 'fas fa-book',
+                    'route' => 'modules.index',
                 ],
 
-        ],
+            ],
         ],
 
     ],

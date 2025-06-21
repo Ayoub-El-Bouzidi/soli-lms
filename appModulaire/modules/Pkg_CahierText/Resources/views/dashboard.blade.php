@@ -24,6 +24,37 @@
 @stop
 
 @section('content')
+
+    {{-- Profile Info --}}
+
+    {{-- Profile Info --}}
+    @php
+    $guard = session('auth.guard', 'web');
+    $user = Auth::guard($guard)->user();
+@endphp
+
+@if($user)
+    <li class="nav-item dropdown user-menu">
+        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+            <span class="d-none d-md-inline">{{ $user->nom }} {{ $user->prenom }}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+            <li class="user-footer">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <input type="hidden" name="role" value="{{ $guard }}">
+                    <button type="submit" class="btn btn-default btn-flat float-right">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </li>
+@else
+    <li class="nav-item">
+        <span class="nav-link">Utilisateur non connecté</span>
+    </li>
+@endif
+
+
     <div class="row">
         <!-- Modules terminés -->
         <div class="col-lg-3 col-6">
@@ -61,8 +92,8 @@
         <div class="col-lg-3 col-6">
             <div class="small-box bg-warning">
                 <div class="inner">
-                    <h3>{{ $seancesCount ?? 0 }}</h3>
-                    <p>Séances planifiées</p>
+                    <h3>{{ $cahierEntriesCount ?? 0 }}</h3>
+                    <p>Cahier Entries</p>
                 </div>
                 <div class="icon">
                     <i class="fas fa-calendar-alt"></i>
@@ -138,9 +169,9 @@
                                         <td>{{ e($contenu['nom'] ?? 'N/A') }}</td>
                                         <td>{{ $contenu['masse_horaire'] ?? 0 }}</td>
                                         <td>{{ $contenu['heures_terminees'] }}</td>
-                                        <td>{{ $contenu['heures_restantes'] ?? 0 }}</td>
+                                        <td>{{ $contenu['heures_restees'] ?? 0 }}</td>
                                         <td>
-                                            @if (($contenu['etat'] ?? '') === 'terminé')
+                                            @if ($contenu['heures_restees'] == 0)
                                                 <span class="badge bg-success">Terminé</span>
                                             @else
                                                 <span class="badge bg-warning text-dark">En cours</span>
@@ -156,6 +187,9 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div class="card-footer">
+                {{ $contenus->links() }}
             </div>
         </div>
     </div>
@@ -176,31 +210,6 @@
                     borderWidth: 2,
                     borderColor: '#fff'
                 }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            font: {
-                                size: 14
-                            }
-                        }
-                    },
-                    tooltip: {
-                        enabled: true,
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                let value = context.raw || 0;
-                                return `${label}: ${value}`;
-                            }
-                        }
-                    }
-                }
             }
         });
     </script>

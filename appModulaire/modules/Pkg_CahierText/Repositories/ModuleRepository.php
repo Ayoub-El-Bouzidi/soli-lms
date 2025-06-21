@@ -12,7 +12,6 @@ class ModuleRepository implements ModuleRepositoryInterface
         return Module::with('seances', 'groupes')->get();
     }
 
-
     public function getModuleById($id)
     {
         return Module::findOrFail($id);

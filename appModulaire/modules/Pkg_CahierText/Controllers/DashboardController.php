@@ -7,91 +7,93 @@ use Illuminate\Routing\Controller;
 use Modules\Pkg_CahierText\Repositories\ModuleRepository;
 use Modules\Pkg_CahierText\Repositories\SeanceRepository;
 use Modules\Pkg_CahierText\Repositories\GroupeRepository;
+use Modules\Pkg_CahierText\Models\Module;
+use Modules\Pkg_CahierText\Models\CahierEntry;
+use Illuminate\Support\Facades\Auth;
+use Modules\Pkg_CahierText\Repositories\CahierEntryRepository;
 
 class DashboardController extends Controller
 {
+    protected $cahierEntryRepository;
     protected $moduleRepository;
     protected $seanceRepository;
     protected $groupeRepository;
 
     public function __construct(
+        CahierEntryRepository $cahierEntryRepository,
         ModuleRepository $moduleRepository,
         SeanceRepository $seanceRepository,
         GroupeRepository $groupeRepository
     ) {
+        $this->cahierEntryRepository = $cahierEntryRepository;
         $this->moduleRepository = $moduleRepository;
         $this->seanceRepository = $seanceRepository;
         $this->groupeRepository = $groupeRepository;
     }
 
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request)
     {
-        // Get the selected group ID from the request
-        $selectedGroupId = $request->query('groupe_id');
+        $guard = session('auth.guard', 'web');
+        $user = Auth::guard($guard)->user();
 
-        // Get all groups for the filter dropdown
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        $selectedGroupId = $request->input('groupe_id');
+
         $groupes = $this->groupeRepository->getAllGroupes();
 
-        // Filter modules by group if selected
         $modules = $selectedGroupId
             ? $this->moduleRepository->getModulesByGroup($selectedGroupId)
             : $this->moduleRepository->getAllModules();
 
-        // Compter les modules terminés et restants (filtered by group if selected)
-        $query = \Modules\Pkg_CahierText\Models\Module::query();
-        if ($selectedGroupId) {
-            $query->whereHas('groupes', function ($q) use ($selectedGroupId) {
-                $q->where('groupes.id', $selectedGroupId);
-            });
-        }
-        $modulesTermines = (clone $query)->where('heures_restees', 0)->count();
-        $modulesRestants = (clone $query)->where('heures_restees', '>', 0)->count();
-
-        // Count séances for the selected group or all groups
-        $seancesQuery = \Modules\Pkg_CahierText\Models\Seance::query();
-        if ($selectedGroupId) {
-            $seancesQuery->whereHas('seance_emploi.module.groupes', function ($q) use ($selectedGroupId) {
-                $q->where('groupes.id', $selectedGroupId);
-            });
-        }
-        $seancesCount = $seancesQuery->count();
-
-        // Get group count (this doesn't change with filtering)
+        $modulesTermines = $modules->where('heures_restees', '<=', 0)->count();
+        $modulesRestants = $modules->where('heures_restees', '>', 0)->count();
+        $cahierEntriesCount = CahierEntry::count();
         $groupesCount = $groupes->count();
 
-        // Préparer les contenus pour l'affichage
         $contenus = collect($modules)->map(function ($module) {
-            // S'assurer que $module est un objet
-            $module = (object) $module;
-
-            // Charger les séances liées (si relation "seances" définie dans Module.php)
-            $seances = isset($module->seances) && is_iterable($module->seances)
-                ? collect($module->seances)
-                : collect();
-
-            // Calcul des heures
-            $heuresTerminees = $seances->sum('duree');
-            $masseHoraire = $module->masse_horaire ?? 0;
-            $heuresRestantes = max(0, $masseHoraire - $heuresTerminees);
-            $etat = $heuresRestantes <= 0 ? 'terminé' : 'en cours';
-
             return [
                 'nom' => $module->nom ?? '',
-                'masse_horaire' => $masseHoraire,
-                'heures_terminees' => $heuresTerminees,
-                'heures_restantes' => $heuresRestantes,
-                'etat' => $etat,
+                'masse_horaire' => $module->masse_horaire ?? 0,
+                'heures_terminees' => $module->heures_terminees ?? 0,
+                'heures_restees' => $module->heures_restees ?? 0,
+                'etat' => ($module->heures_restees ?? 0) <= 0 ? 'terminé' : 'en cours',
             ];
         });
+
+        $perPage = 5;
+        $page = $request->get('page', 1);
+        $contenus = new \Illuminate\Pagination\LengthAwarePaginator(
+            $contenus->forPage($page, $perPage),
+            $contenus->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
         return view('Pkg_CahierText::dashboard', compact(
             'modulesTermines',
             'modulesRestants',
-            'seancesCount',
+            'cahierEntriesCount',
             'groupesCount',
             'contenus',
             'groupes',
             'selectedGroupId'
         ));
+    }
+
+    public function responsableDashboard(Request $request)
+    {
+        return $this->index($request);
+    }
+
+    public function formateurDashboard(Request $request)
+    {
+        return $this->index($request);
     }
 }

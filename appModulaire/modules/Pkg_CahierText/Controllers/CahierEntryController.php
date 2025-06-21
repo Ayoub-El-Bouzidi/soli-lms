@@ -3,20 +3,48 @@
 namespace Modules\Pkg_CahierText\Controllers;
 
 use App\Http\Controllers\Controller;
+use Modules\Pkg_CahierText\app\Requests\CahierEntryRequest;
 use Modules\Pkg_CahierText\Models\CahierEntry;
-use Modules\Pkg_CahierText\Models\Module;
+use Modules\Pkg_CahierText\Repositories\CahierEntryRepository;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CahierEntryController extends Controller
 {
-    public function index()
-    {
-        $entries = CahierEntry::with('module')
-            ->orderBy('date', 'desc')
-            ->paginate(10);
+    protected $repository;
 
-        return view('Pkg_CahierText::cahier.index', compact('entries'));
+    public function __construct(CahierEntryRepository $repository)
+    {
+        $this->middleware(['auth:formateurs,responsables']);
+        $this->repository = $repository;
+    }
+
+    public function index(Request $request)
+    {
+        if (auth('responsables')->check()) {
+            // Responsable: see all entries with optional group filter
+            if ($request->has('groupe_id') && $request->groupe_id) {
+                $entries = $this->repository->getEntriesByGroup($request->groupe_id);
+            } else {
+                $entries = $this->repository->getAllEntries();
+            }
+            $groupes = $this->repository->getAllGroups(); // All groups for filter dropdown
+        } else {
+            // Formateur: see only their entries
+            $formateur = auth('formateurs')->user();
+            $formateurId = auth('formateurs')->id(); // For getFormateurGroups
+            $userId = $formateur->user_id; // For getEntriesByFormateur
+
+            $entries = $this->repository->getEntriesByFormateur($userId);
+            $groupes = $this->repository->getFormateurGroups($formateurId);
+        }
+
+        // Get groups for each entry's formateur
+        foreach ($entries as $entry) {
+            $entry->formateur_groups = $this->repository->getUserGroups($entry->formateur_id);
+        }
+
+        return view('Pkg_CahierText::cahier.index', compact('entries', 'groupes'));
     }
 
     public function create(Request $request)
@@ -24,127 +52,119 @@ class CahierEntryController extends Controller
         $selectedModule = null;
 
         if ($request->has('module_id')) {
-            $selectedModule = Module::findOrFail($request->module_id);
-
-            // Check if module has remaining hours
-            if ($selectedModule->heures_restees <= 0) {
-                return redirect()->route('modules.index')
-                    ->with('error', 'Ce module a déjà atteint sa masse horaire maximale.');
-            }
+            $selectedModule = $this->repository->getModuleById($request->module_id);
         }
 
-        $modules = Module::where('heures_restees', '>', 0)->get();
-
-        if ($modules->isEmpty()) {
-            return redirect()->route('modules.index')
-                ->with('error', 'Aucun module disponible pour créer une entrée.');
+        // Check which guard is active and get the appropriate user ID
+        if (auth('responsables')->check()) {
+            // Responsable: can see all modules
+            $modules = $this->repository->getAllModules();
+        } else {
+            // Formateur: can only see their assigned modules
+            $formateur = auth('formateurs')->user();
+            if ($formateur) {
+                $formateurId = auth('formateurs')->id(); // For getAvailableModules
+                $modules = $this->repository->getAvailableModules($formateurId);
+            } else {
+                // Fallback: if no formateur found, show empty modules
+                $modules = collect();
+            }
         }
 
         return view('Pkg_CahierText::cahier.create', compact('modules', 'selectedModule'));
     }
 
-    public function store(Request $request)
+    public function store(CahierEntryRequest $request)
     {
-        $validated = $request->validate([
-            'module_id' => 'required|exists:modules,id',
-            'date' => 'required|date',
-            'heures_prevues' => 'required|numeric|min:0.5|max:8',
-            'heure_debut' => 'required',
-            'contenu' => 'nullable|string',
-            'objectifs' => 'nullable|string',
-        ]);
+        try {
+            // Get the correct user ID based on the active guard
+            if (auth('responsables')->check()) {
+                $responsable = auth('responsables')->user();
+                $userId = $responsable->user_id; // Get the user_id from the responsable model
+            } else {
+                $formateur = auth('formateurs')->user();
+                $userId = $formateur->user_id; // Get the user_id from the formateur model
+            }
 
-        // Check if module has enough remaining hours
-        $module = Module::findOrFail($validated['module_id']);
-        if ($module->heures_restees <= 0) {
-            return redirect()->route('modules.index')
-                ->with('error', 'Ce module a déjà atteint sa masse horaire maximale.');
-        }
+            if (!$userId) {
+                throw new \Exception('Utilisateur non authentifié.');
+            }
 
-        if ($validated['heures_prevues'] > $module->heures_restees) {
+            $this->repository->createEntry(
+                $request->validated(),
+                $userId
+            );
+
+            return redirect()->route('cahier-de-texte.index')
+                ->with('success', 'Entrée créée avec succès');
+        } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', "Les heures prévues dépassent les heures restantes du module ({$module->heures_restees}h).");
+                ->with('error', $e->getMessage());
         }
-
-        // Calculate heure_fin based on heure_debut and heures_prevues
-        $heureDebut = Carbon::createFromFormat('H:i', $request->heure_debut);
-        $heureFin = $heureDebut->copy()->addHours((int)$validated['heures_prevues'])
-            ->addMinutes(($validated['heures_prevues'] * 60) % 60);
-
-        $entry = new CahierEntry($validated);
-        $entry->formateur_id = 1; // Set a default formateur_id
-        $entry->heure_debut = $heureDebut;
-        $entry->heure_fin = $heureFin;
-        $entry->save();
-
-        // Update module's remaining hours
-        $module->heures_terminees += $validated['heures_prevues'];
-        $module->heures_restees = max(0, $module->masse_horaire - $module->heures_terminees);
-        $module->save();
-
-        return redirect()->route('cahier.index')
-            ->with('success', 'Entrée créée avec succès');
     }
 
     public function edit(CahierEntry $entry)
     {
-        $modules = Module::all();
+        // Check which guard is active and get the appropriate modules
+        if (auth('responsables')->check()) {
+            // Responsable: can see all modules (including the currently assigned one)
+            $modules = $this->repository->getAllModulesForEdit();
+        } else {
+            // Formateur: can only see their assigned modules
+            $formateur = auth('formateurs')->user();
+            if ($formateur) {
+                $formateurId = auth('formateurs')->id(); // For getAvailableModules
+                $modules = $this->repository->getAvailableModules($formateurId);
+            } else {
+                // Fallback: if no formateur found, show empty modules
+                $modules = collect();
+            }
+        }
+
         return view('Pkg_CahierText::cahier.edit', compact('entry', 'modules'));
     }
 
     public function update(Request $request, CahierEntry $entry)
     {
-        $validated = $request->validate([
-            'module_id' => 'required|exists:modules,id',
-            'date' => 'required|date',
-            'heures_prevues' => 'required|numeric|min:0.5|max:8',
-            'heure_debut' => 'required',
-            'contenu' => 'nullable|string',
-            'objectifs' => 'nullable|string',
-            'status' => 'required|in:planifie,realise,annule'
-        ]);
+        try {
+            $validated = $request->validate([
+                'module_id' => 'required|exists:modules,id',
+                'date' => 'required|date',
+                'heures_prevues' => 'required|numeric|min:0.5|max:8',
+                'heure_debut' => 'required',
+                'contenu' => 'nullable|string',
+                'objectifs' => 'nullable|string',
+                'status' => 'required|in:planifie,realise,annule'
+            ]);
 
-        // Restore previous hours to the module
-        $oldModule = $entry->module;
-        $oldModule->heures_terminees -= $entry->heures_prevues;
-        $oldModule->heures_restees = $oldModule->masse_horaire - $oldModule->heures_terminees;
-        $oldModule->save();
+            $this->repository->updateEntry($entry, $validated);
 
-        // Check if new module has enough remaining hours
-        $newModule = Module::findOrFail($validated['module_id']);
-        if ($validated['heures_prevues'] > $newModule->heures_restees) {
+            return redirect()->route('cahier-de-texte.index')
+                ->with('success', 'Entrée mise à jour avec succès');
+        } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', "Les heures prévues dépassent les heures restantes du module ({$newModule->heures_restees}h).");
+                ->with('error', $e->getMessage());
         }
-
-        $heureDebut = Carbon::createFromFormat('H:i', $request->heure_debut);
-        $heureFin = $heureDebut->copy()->addHours((int)$validated['heures_prevues'])
-            ->addMinutes(($validated['heures_prevues'] * 60) % 60);
-
-        $entry->update(array_merge($validated, [
-            'heure_debut' => $heureDebut,
-            'heure_fin' => $heureFin
-        ]));
-
-        // Update new module's remaining hours
-        $newModule->heures_terminees += $validated['heures_prevues'];
-        $newModule->heures_restees = max(0, $newModule->masse_horaire - $newModule->heures_terminees);
-        $newModule->save();
-
-        return redirect()->route('cahier.index')
-            ->with('success', 'Entrée mise à jour avec succès');
     }
 
     public function destroy(CahierEntry $entry)
     {
-        // Restore hours to the module
-        $module = $entry->module;
-        $module->heures_terminees -= $entry->heures_prevues;
-        $module->heures_restees = $module->masse_horaire - $module->heures_terminees;
-        $module->save();
+        try {
+            $this->repository->deleteEntry($entry);
 
-        $entry->delete();
-        return redirect()->route('cahier.index')
-            ->with('success', 'Entrée supprimée avec succès');
+            return redirect()->route('cahier-de-texte.index')
+                ->with('success', 'Entrée supprimée avec succès');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Export the cahier entries to an Excel file
+     */
+    public function export()
+    {
+        return Excel::download(new CahierEntry(), 'cahier_entries.xlsx');
     }
 }

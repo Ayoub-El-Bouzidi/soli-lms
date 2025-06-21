@@ -1,5 +1,8 @@
+---
+config:
+  theme: default
+---
 classDiagram
-
 namespace Pkg_Emploie{
   class Emploie
   class SeanceEpmloie
@@ -8,33 +11,24 @@ namespace Pkg_Emploie{
 namespace Pkg_Chier_Text{
   class Groupe
   class Formateur
-  class Responsabble
+  class Responsable
   class Module
   class Seance
 }
-
 class Groupe {
   id : Integer
   nom : String
 }
-
 class Module {
   id : Integer
   nom : String
   masse_horaire : int
-  
 }
-
-
-
 class Emploie {
   id : Integer
   date_debut : date
   date_fin : date
 }
-
-
-
 class Formateur {
   id : Integer
   nom : String
@@ -42,8 +36,6 @@ class Formateur {
   email : String
   mot_de_pass : String
 }
-
-
 class Responsable {
   id : Integer
   nom : String
@@ -51,36 +43,23 @@ class Responsable {
   email : String
   mot_de_pass : String
 }
-
-
-
 class Seance{
   id : Integer
   etat_validation : String
 }
-
 class SeanceEpmloie{
   id : Integer
   heur_debut : time
   heur_fin : time
-
 }
-
 class Salle{
  id : Integer
  nom : string
 }
-
-
-
 Seance "*" -- "1" SeanceEpmloie
 SeanceEpmloie "*" -- "1" Module
 SeanceEpmloie "1" -- "*" Formateur
 Groupe "*" -- "*" Formateur
-Responsable "1" -- "*" emploie
 SeanceEpmloie "*" -- "1" Salle
 Groupe "1" -- "*" Emploie
 SeanceEpmloie "*" -- "1" Emploie
-
-
-

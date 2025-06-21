@@ -9,7 +9,7 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('cahier.update', $entry) }}" method="POST">
+            <form action="{{ route('cahier-de-texte.update', $entry) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -102,7 +102,7 @@
 
                 <div class="form-group mt-4">
                     <button type="submit" class="btn btn-primary">Mettre à jour</button>
-                    <a href="{{ route('cahier.index') }}" class="btn btn-secondary">Annuler</a>
+                    <a href="{{ route('cahier-de-texte.index') }}" class="btn btn-secondary">Annuler</a>
                 </div>
             </form>
         </div>

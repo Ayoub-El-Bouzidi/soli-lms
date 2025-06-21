@@ -4,16 +4,19 @@ namespace Modules\Pkg_CahierText\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use Modules\Pkg_CahierText\App\Exports\ModulesExport;
+use Modules\Pkg_CahierText\app\Requests\ModuleRequest;
 use Modules\Pkg_CahierText\Repositories\ModuleRepository;
 use Modules\Pkg_CahierText\Models\Groupe;
 
 class ModuleController extends Controller
 {
-    protected $moduleRepository;
+    protected $repository;
 
-    public function __construct(ModuleRepository $moduleRepository)
+    public function __construct(ModuleRepository $repository)
     {
-        $this->moduleRepository = $moduleRepository;
+        $this->repository = $repository;
     }
 
     /**
@@ -22,7 +25,7 @@ class ModuleController extends Controller
     public function index(Request $request)
     {
         $groupId = $request->query('groupe_id');
-        $modules = $this->moduleRepository->getModulesByGroup($groupId);
+        $modules = $this->repository->getModulesByGroup($groupId);
         $groupes = Groupe::all();
 
         return view('Pkg_CahierText::modules.index', [
@@ -44,16 +47,12 @@ class ModuleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ModuleRequest $request)
     {
-        $request->validate([
-            'nom' => 'required|string|max:255',
-            'masse_horaire' => 'required|integer|min:1',
-            'groupes' => 'array'
-        ]);
+        $request->validated();
 
         $data = $request->all();
-        $module = $this->moduleRepository->createModule($data);
+        $module = $this->repository->createModule($data);
 
         if ($request->has('groupes')) {
             $module->groupes()->sync($request->groupes);
@@ -68,7 +67,7 @@ class ModuleController extends Controller
      */
     public function show(string $id)
     {
-        $module = $this->moduleRepository->getModuleById($id);
+        $module = $this->repository->getModuleById($id);
         return view('Pkg_CahierText::modules.show', compact('module'));
     }
 
@@ -77,7 +76,7 @@ class ModuleController extends Controller
      */
     public function edit(string $id)
     {
-        $module = $this->moduleRepository->getModuleById($id);
+        $module = $this->repository->getModuleById($id);
         $groupes = Groupe::all();
         return view('Pkg_CahierText::modules.edit', compact('module', 'groupes'));
     }
@@ -85,16 +84,12 @@ class ModuleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ModuleRequest $request, string $id)
     {
-        $request->validate([
-            'nom' => 'required|string|max:255',
-            'masse_horaire' => 'required|integer|min:1',
-            'groupes' => 'array'
-        ]);
+        $request->validated();
 
         $data = $request->all();
-        $module = $this->moduleRepository->updateModule($id, $data);
+        $module = $this->repository->updateModule($id, $data);
 
         if ($request->has('groupes')) {
             $module->groupes()->sync($request->groupes);
@@ -109,8 +104,17 @@ class ModuleController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->moduleRepository->deleteModule($id);
+        $this->repository->deleteModule($id);
         return redirect()->route('modules.index')
             ->with('success', 'Module supprimé avec succès.');
+    }
+
+
+    /**
+     * Export modules
+     */
+    public function export()
+    {
+        return Excel::download(new ModulesExport, 'modules.xlsx');
     }
 }
