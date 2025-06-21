@@ -36,7 +36,13 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $guard = session('auth.guard', 'web');
+        $user = Auth::guard($guard)->user();
+
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
         $selectedGroupId = $request->input('groupe_id');
 
         $groupes = $this->groupeRepository->getAllGroupes();
@@ -80,14 +86,14 @@ class DashboardController extends Controller
             'selectedGroupId'
         ));
     }
+
     public function responsableDashboard(Request $request)
     {
-        // For now, reuse the index logic for responsables
         return $this->index($request);
     }
+
     public function formateurDashboard(Request $request)
     {
-        // For now, reuse the index logic for formateurs
         return $this->index($request);
     }
 }

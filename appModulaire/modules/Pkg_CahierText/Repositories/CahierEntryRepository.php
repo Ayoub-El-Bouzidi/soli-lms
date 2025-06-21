@@ -33,6 +33,34 @@ class CahierEntryRepository
         })->where('heures_restees', '>', 0)->get();
     }
 
+    public function getAllModules()
+    {
+        // Get all modules with remaining hours (for responsables)
+        return Module::where('heures_restees', '>', 0)->get();
+    }
+
+    public function getAllModulesForEdit()
+    {
+        // Get all modules for editing (including those with no remaining hours)
+        return Module::all();
+    }
+
+    public function getAllGroups()
+    {
+        // Get all groups for filtering
+        return Groupe::orderBy('nom')->get();
+    }
+
+    public function getEntriesByGroup(int $groupId): LengthAwarePaginator
+    {
+        return CahierEntry::with(['module', 'formateur'])
+            ->whereHas('formateur.formateur.groupes', function ($query) use ($groupId) {
+                $query->where('groupes.id', $groupId);
+            })
+            ->orderBy('date', 'desc')
+            ->paginate(10);
+    }
+
     public function getModuleById(int $moduleId): Module
     {
         return Module::findOrFail($moduleId);
@@ -117,9 +145,16 @@ class CahierEntryRepository
 
     public function getEntriesByFormateur(int $formateurId): LengthAwarePaginator
     {
-        return CahierEntry::with(['module', 'formateur.groupes'])
+        return CahierEntry::with(['module', 'formateur'])
             ->where('formateur_id', $formateurId)
             ->orderBy('date', 'desc')
             ->paginate(10);
+    }
+
+    public function getUserGroups(int $userId)
+    {
+        return Groupe::whereHas('formateurs', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->get();
     }
 }

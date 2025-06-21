@@ -6,17 +6,17 @@
     <div class="d-flex justify-content-between">
         <h1>Gestion des Modules</h1>
         <div class="d-flex gap-2 align-items-center justify-content-between">
-            @role('responsable')
+            @hasRole('responsable')
                 <a href="{{ route('modules.export') }}" class="btn btn-success">
                     <i class="fas fa-file-excel"></i> Exporter
                 </a>
-            @endrole
+            @endhasRole
 
-            @role('responsable')
+            @hasRole('responsable')
                 <a href="{{ route('modules.create') }}" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Nouveau Module
                 </a>
-            @endrole
+            @endhasRole
         </div>
 
     </div>

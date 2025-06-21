@@ -7,11 +7,10 @@ use Modules\Pkg_CahierText\Controllers\DashboardController;
 use Modules\Pkg_CahierText\Controllers\ModuleController;
 use Modules\Pkg_CahierText\Controllers\CahierEntryController;
 
-// Route pour le tableau de bord
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
-
 // Routes pour les modules
-Route::resource('modules', ModuleController::class);
+Route::middleware(['web', 'auth.multiguard:formateurs,responsables'])->group(function () {
+    Route::resource('modules', ModuleController::class);
+});
 
 // Routes pour le cahier de texte
 Route::prefix('cahier-de-texte')->middleware(['web', 'auth.multiguard:formateurs,responsables'])->group(function () {

@@ -16,11 +16,44 @@
                         <a href="{{ route('cahier-de-texte.export') }}" class="btn btn-success btn-sm">
                             <i class="fas fa-file-excel"></i> Exporter
                         </a>
+                        @hasRole('formateur')
                         <a href="{{ route('cahier-de-texte.create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> Nouvelle Entrée
                         </a>
+                        @endhasRole
                     </div>
                 </div>
+
+                @hasRole('responsable')
+                <div class="card-body">
+                    <form method="GET" action="{{ route('cahier-de-texte.index') }}" class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="groupe_id">Filtrer par Groupe</label>
+                                <select name="groupe_id" id="groupe_id" class="form-control">
+                                    <option value="">Tous les groupes</option>
+                                    @foreach($groupes as $groupe)
+                                        <option value="{{ $groupe->id }}" {{ request('groupe_id') == $groupe->id ? 'selected' : '' }}>
+                                            {{ $groupe->nom }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-filter"></i> Filtrer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                @endhasRole
+
                 <div class="card-body p-0">
                     <div class="table-responsive" style="width: 100%;">
                         <table class="table table-bordered table-striped w-100" style="width: 100%;">
@@ -42,14 +75,16 @@
                             <tbody>
                                 @forelse($entries as $entry)
                                     <tr>
-                                        <td>{{ $entry->formateur->nom ?? '' }} {{ $entry->formateur->prenom ?? '' }}</td>
+                                        <td>{{ $entry->formateur_name }}</td>
                                         <td>{{ $entry->date->format('d/m/Y') }}</td>
                                         <td>{{ $entry->module->nom }}</td>
                                         <td>
-                                            @if($entry->formateur)
-                                                @foreach($entry->formateur->groupes as $groupe)
+                                            @if($entry->formateur_groups && $entry->formateur_groups->count() > 0)
+                                                @foreach($entry->formateur_groups as $groupe)
                                                     <span class="badge badge-info">{{ $groupe->nom }}</span>
                                                 @endforeach
+                                            @else
+                                                <span class="text-muted">Aucun groupe</span>
                                             @endif
                                         </td>
                                         <td>{{ $entry->heures_prevues }}h</td>
@@ -85,7 +120,7 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    {{ $entries->links() }}
+                    {{ $entries->appends(request()->query())->links() }}
                 </div>
             </div>
         </div>

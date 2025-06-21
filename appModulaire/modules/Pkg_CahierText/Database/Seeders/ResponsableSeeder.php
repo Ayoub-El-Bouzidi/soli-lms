@@ -16,22 +16,33 @@ class ResponsableSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::create([
-            'name' => 'Manager',
-            'email' => 'responsable@example.com',
-            'password' => bcrypt('password'),
-        ]);
+        $user = User::firstOrCreate(
+            ['email' => 'responsable@example.com'],
+            [
+                'name' => 'Manager',
+                'password' => bcrypt('password'),
+            ]
+        );
 
         // Assign the 'responsable' role to the user
         $responsableRole = Role::findByName('responsable');
-        $user->assignRole($responsableRole);
+        if (!$user->hasRole('responsable')) {
+            $user->assignRole($responsableRole);
+        }
 
-        Responsable::create([
-            'user_id' => $user->id,
-            'nom' => 'Manager',
-            'prenom' => 'Responsable',
-            'email' => 'responsable@example.com',
-            'password' => Hash::make('password'),
-        ]);
+        $responsable = Responsable::firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'nom' => 'Manager',
+                'prenom' => 'Responsable',
+                'email' => 'responsable@example.com',
+                'password' => Hash::make('password'),
+            ]
+        );
+
+        // Also assign the 'responsable' role to the Responsable model
+        if (!$responsable->hasRole('responsable')) {
+            $responsable->assignRole($responsableRole);
+        }
     }
 }

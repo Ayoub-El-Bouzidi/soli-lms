@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Modules\Blog\Models\Article;
 use Modules\Blog\Models\Comment;
+use Modules\Pkg_CahierText\Models\Formateur;
 
 class User extends Authenticatable
 {
@@ -49,4 +50,11 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Get the formateur record associated with this user
+     */
+    public function formateur()
+    {
+        return $this->hasOne(Formateur::class);
+    }
 }

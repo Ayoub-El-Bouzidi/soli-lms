@@ -32,13 +32,13 @@ class FormateurSeeder extends Seeder
                 ]
             );
 
-            // Assign 'formateur' role
+            // Assign 'formateur' role to user
             if (!$user->hasRole('formateur')) {
                 $user->assignRole('formateur');
             }
 
             // Create formateur profile
-            Formateur::updateOrCreate(
+            $formateur = Formateur::updateOrCreate(
                 ['user_id' => $user->id],
                 [
                     'nom' => $tutor['nom'],
@@ -47,6 +47,11 @@ class FormateurSeeder extends Seeder
                     'password' => $user->password,
                 ]
             );
+
+            // Also assign 'formateur' role to the Formateur model
+            if (!$formateur->hasRole('formateur')) {
+                $formateur->assignRole('formateur');
+            }
         }
     }
 }

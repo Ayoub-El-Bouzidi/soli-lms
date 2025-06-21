@@ -8,24 +8,24 @@ use Modules\Pkg_CahierText\Models\CahierEntry;
 class CahierEntryExport implements FromCollection
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         return CahierEntry::with('modules')->get()
-        ->map(function($cahierEntry){
-            return [
-                'id' => $cahierEntry->id,
-                'date' => $cahierEntry->date,
-                'modules' => $cahierEntry->modules->pluck('nom')->implode(', '),
-                'heures_prevues' => $cahierEntry->heures_prevues,
-                'heure_debut' => $cahierEntry->heure_debut,
-                'heure_fin' => $cahierEntry->heure_fin,
-                'contenu' => $cahierEntry->contenu,
-                'objectifs' => $cahierEntry->objectifs,
-                'status' => $cahierEntry->status,
-            ];
-        });
+            ->map(function ($cahierEntry) {
+                return [
+                    'id' => $cahierEntry->id,
+                    'date' => $cahierEntry->date,
+                    'modules' => $cahierEntry->modules->pluck('nom')->implode(', '),
+                    'heures_prevues' => $cahierEntry->heures_prevues,
+                    'heure_debut' => $cahierEntry->heure_debut,
+                    'heure_fin' => $cahierEntry->heure_fin,
+                    'contenu' => $cahierEntry->contenu,
+                    'objectifs' => $cahierEntry->objectifs,
+                    'status' => $cahierEntry->status,
+                ];
+            });
     }
 
     public function headings(): array

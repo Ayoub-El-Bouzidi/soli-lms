@@ -9,45 +9,22 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
     protected $redirectTo = '/dashboard';
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
-        $this->middleware('auth')->only('logout');
+        $this->middleware('auth:web,formateurs,responsables')->only('logout');
     }
 
     protected function guard()
     {
+        // This method is less relevant with the new approach, but keep for compatibility
         $role = request()->input('role', 'web');
         $validGuards = ['web', 'formateurs', 'responsables'];
-        if (!in_array($role, $validGuards)) {
-            $role = 'web';
-        }
-        return Auth::guard($role);
+        return Auth::guard(in_array($role, $validGuards) ? $role : 'web');
     }
 
     protected function validateLogin(Request $request)
@@ -55,19 +32,44 @@ class LoginController extends Controller
         $request->validate([
             $this->username() => 'required|string',
             'password' => 'required|string',
-            'role' => 'required|string|in:web,formateurs,responsables',
+            'role' => 'nullable|string|in:web,formateurs,responsables', // Make role optional
         ]);
+    }
+
+    protected function attemptLogin(Request $request)
+    {
+        $guards = ['web', 'formateurs', 'responsables'];
+        $credentials = $this->credentials($request);
+
+        if ($request->filled('role')) {
+            // If role is provided, attempt login with that guard only
+            $guard = $request->input('role');
+            if (in_array($guard, $guards) && Auth::guard($guard)->attempt($credentials, $request->filled('remember'))) {
+                $request->session()->put('auth.guard', $guard);
+                return true;
+            }
+            return false;
+        }
+
+        // If no role is provided, try all guards
+        foreach ($guards as $guard) {
+            if (Auth::guard($guard)->attempt($credentials, $request->filled('remember'))) {
+                $request->session()->put('auth.guard', $guard);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function authenticated(Request $request, $user)
     {
-        if ($request->input('role') === 'formateurs') {
-            Auth::guard('formateurs')->login($user);
-            $request->session()->regenerate();
+        $role = $request->session()->get('auth.guard', 'web');
+        $request->session()->regenerate();
+
+        if ($role === 'formateurs') {
             return redirect()->route('formateur.dashboard');
-        } elseif ($request->input('role') === 'responsables') {
-            Auth::guard('responsables')->login($user);
-            $request->session()->regenerate();
+        } elseif ($role === 'responsables') {
             return redirect()->route('responsable.dashboard');
         }
         return redirect()->route('dashboard');
@@ -75,19 +77,10 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        $role = $request->input('role', 'web');
-        Auth::guard($role)->logout();
+        $guard = $request->session()->get('auth.guard', 'web');
+        Auth::guard($guard)->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/');
-    }
-
-    protected function attemptLogin(Request $request)
-    {
-        $guard = $request->input('role', 'web'); // Default to web if role is missing
-        return Auth::guard($guard)->attempt(
-            $this->credentials($request),
-            $request->filled('remember')
-        );
     }
 }

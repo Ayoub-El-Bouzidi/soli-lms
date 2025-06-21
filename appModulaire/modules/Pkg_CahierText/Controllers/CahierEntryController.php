@@ -19,31 +19,57 @@ class CahierEntryController extends Controller
         $this->repository = $repository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         if (auth('responsables')->check()) {
-            // Responsable: see all entries
-            $entries = $this->repository->getAllEntries();
-            $groupes = collect(); // Or fetch all groups if needed
+            // Responsable: see all entries with optional group filter
+            if ($request->has('groupe_id') && $request->groupe_id) {
+                $entries = $this->repository->getEntriesByGroup($request->groupe_id);
+            } else {
+                $entries = $this->repository->getAllEntries();
+            }
+            $groupes = $this->repository->getAllGroups(); // All groups for filter dropdown
         } else {
             // Formateur: see only their entries
-            $formateurId = auth('formateurs')->id();
-            $entries = $this->repository->getEntriesByFormateur($formateurId);
+            $formateur = auth('formateurs')->user();
+            $formateurId = auth('formateurs')->id(); // For getFormateurGroups
+            $userId = $formateur->user_id; // For getEntriesByFormateur
+
+            $entries = $this->repository->getEntriesByFormateur($userId);
             $groupes = $this->repository->getFormateurGroups($formateurId);
         }
+
+        // Get groups for each entry's formateur
+        foreach ($entries as $entry) {
+            $entry->formateur_groups = $this->repository->getUserGroups($entry->formateur_id);
+        }
+
         return view('Pkg_CahierText::cahier.index', compact('entries', 'groupes'));
     }
 
     public function create(Request $request)
     {
-        $formateurId = auth('formateurs')->id();
         $selectedModule = null;
 
         if ($request->has('module_id')) {
             $selectedModule = $this->repository->getModuleById($request->module_id);
         }
 
-        $modules = $this->repository->getAvailableModules($formateurId);
+        // Check which guard is active and get the appropriate user ID
+        if (auth('responsables')->check()) {
+            // Responsable: can see all modules
+            $modules = $this->repository->getAllModules();
+        } else {
+            // Formateur: can only see their assigned modules
+            $formateur = auth('formateurs')->user();
+            if ($formateur) {
+                $formateurId = auth('formateurs')->id(); // For getAvailableModules
+                $modules = $this->repository->getAvailableModules($formateurId);
+            } else {
+                // Fallback: if no formateur found, show empty modules
+                $modules = collect();
+            }
+        }
 
         return view('Pkg_CahierText::cahier.create', compact('modules', 'selectedModule'));
     }
@@ -51,9 +77,22 @@ class CahierEntryController extends Controller
     public function store(CahierEntryRequest $request)
     {
         try {
+            // Get the correct user ID based on the active guard
+            if (auth('responsables')->check()) {
+                $responsable = auth('responsables')->user();
+                $userId = $responsable->user_id; // Get the user_id from the responsable model
+            } else {
+                $formateur = auth('formateurs')->user();
+                $userId = $formateur->user_id; // Get the user_id from the formateur model
+            }
+
+            if (!$userId) {
+                throw new \Exception('Utilisateur non authentifié.');
+            }
+
             $this->repository->createEntry(
                 $request->validated(),
-                auth('formateurs')->id()
+                $userId
             );
 
             return redirect()->route('cahier-de-texte.index')
@@ -66,8 +105,22 @@ class CahierEntryController extends Controller
 
     public function edit(CahierEntry $entry)
     {
-        $formateurId = auth('formateurs')->id();
-        $modules = $this->repository->getAvailableModules($formateurId);
+        // Check which guard is active and get the appropriate modules
+        if (auth('responsables')->check()) {
+            // Responsable: can see all modules (including the currently assigned one)
+            $modules = $this->repository->getAllModulesForEdit();
+        } else {
+            // Formateur: can only see their assigned modules
+            $formateur = auth('formateurs')->user();
+            if ($formateur) {
+                $formateurId = auth('formateurs')->id(); // For getAvailableModules
+                $modules = $this->repository->getAvailableModules($formateurId);
+            } else {
+                // Fallback: if no formateur found, show empty modules
+                $modules = collect();
+            }
+        }
+
         return view('Pkg_CahierText::cahier.edit', compact('entry', 'modules'));
     }
 
