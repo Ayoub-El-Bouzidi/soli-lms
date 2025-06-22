@@ -66,9 +66,11 @@
                                 <td>{{ $module->heures_terminees }}h</td>
                                 <td>{{ $module->heures_restees }}h</td>
                                 <td>
-                                    <span class="badge badge-{{ $module->etat_validation === 'terminé' ? 'success' : ($module->etat_validation === 'en cours' ? 'warning' : 'danger') }}">
-                                        {{ ucfirst($module->etat_validation) }}
-                                    </span>
+                                    @if($module->heures_restees > 0)
+                                        <span class="badge badge-warning">En cours</span>
+                                    @else
+                                        <span class="badge badge-success">Terminé</span>
+                                    @endif
                                 </td>
                                 <td>
                                     @foreach($module->groupes as $groupe)

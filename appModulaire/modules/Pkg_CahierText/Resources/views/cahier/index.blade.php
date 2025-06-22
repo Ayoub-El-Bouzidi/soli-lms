@@ -79,8 +79,8 @@
                                         <td>{{ $entry->date->format('d/m/Y') }}</td>
                                         <td>{{ $entry->module->nom }}</td>
                                         <td>
-                                            @if($entry->formateur_groups && $entry->formateur_groups->count() > 0)
-                                                @foreach($entry->formateur_groups as $groupe)
+                                            @if($entry->module->groupes && $entry->module->groupes->count() > 0)
+                                                @foreach($entry->module->groupes as $groupe)
                                                     <span class="badge badge-info">{{ $groupe->nom }}</span>
                                                 @endforeach
                                             @else
@@ -93,9 +93,11 @@
                                         <td>{{ $entry->contenu }}</td>
                                         <td>{{ $entry->objectifs }}</td>
                                         <td>
-                                            <span class="badge badge-{{ $entry->status === 'realise' ? 'success' : ($entry->status === 'planifie' ? 'info' : 'danger') }}">
-                                                {{ ucfirst($entry->status) }}
-                                            </span>
+                                            @if($entry->heure_fin >= now())
+                                                <span class="badge badge-warning">En cours</span>
+                                            @else
+                                                <span class="badge badge-success">Terminé</span>
+                                            @endif
                                         </td>
                                         <td>
                                             <a href="{{ route('cahier-de-texte.edit', $entry) }}" class="btn btn-sm btn-info">

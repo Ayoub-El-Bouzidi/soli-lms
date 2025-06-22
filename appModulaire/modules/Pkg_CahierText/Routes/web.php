@@ -23,6 +23,11 @@ Route::prefix('cahier-de-texte')->middleware(['web', 'auth.multiguard:formateurs
     Route::delete('/{entry}', [CahierEntryController::class, 'destroy'])->name('cahier-de-texte.destroy');
 });
 
+// Routes pour les séances avec statut basé sur le temps
+Route::prefix('seances')->middleware(['web', 'auth.multiguard:formateurs,responsables'])->group(function () {
+    Route::get('/', [CahierEntryController::class, 'seancesIndex'])->name('seances.index');
+});
+
 // Export modules
 Route::get('/exportModules', [ModuleController::class, 'export'])->name('modules.export');
 // Export cahier entries
