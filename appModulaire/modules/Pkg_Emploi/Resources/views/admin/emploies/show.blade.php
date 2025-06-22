@@ -67,7 +67,7 @@
                                     @endphp
                                     
                                     @if($lesson && $isStart)
-                                        <td style="background-color: {{ $lesson['color_class'] ?? 'black' }}; color: white;" colspan="{{ $colspan }}"
+                                        <td style="background-color: {{ $lesson['color_class'] ?? 'black' }}; color: black;" colspan="{{ $colspan }}"
                                             class="lesson-cell"
                                             data-lesson-id="{{ $lesson['id'] ?? '' }}"
                                             title="Click to edit">

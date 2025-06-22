@@ -24,8 +24,8 @@ class EmploiServiceProvider extends ServiceProvider
 
         // Publier les assets si nécessaire
         $this->publishes([
-            __DIR__.'/../../Resources/views' => resource_path('views/vendor/Blog'),
-        ], 'Blog-views');
+            __DIR__.'/../../Resources/views' => resource_path('views/vendor/Emploi'),
+        ], 'Emploi-views');
     }
 
     public function register()

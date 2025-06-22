@@ -1,24 +1,23 @@
 <?php
 
-
+use Modules\Pkg_Emploi\Controllers\HomeController;
 use Modules\Pkg_Emploi\Controllers\DashboardController;
 use Modules\Pkg_Emploi\Controllers\EmploiController;
 use Illuminate\Support\Facades\Route;
-use Modules\Blog\Controllers\ArticleController;
-use Modules\Blog\Controllers\CategoryController;
-use Modules\Blog\Controllers\CommentController;
-use Modules\Blog\Controllers\TagController;
-use Modules\Blog\Controllers\HomeController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
 
-Route::resource('/emploie',EmploiController::class);
+    Route::resource('/emploie',EmploiController::class)->middleware('auth');;
 
-
+Route::get('/', [HomeController::class, 'index'])->middleware('guest');
 
 Auth::routes();
+
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/login');
+})->name('logout');
 
 // Route::get('/', function () {
 //     return view('Blog::auth.login');

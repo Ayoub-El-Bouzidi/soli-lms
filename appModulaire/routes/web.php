@@ -1,6 +1,6 @@
  <?php
-include_once __DIR__.'/../modules/Pkg_CahierText/Routes/web.php';
-use Illuminate\Support\Facades\Route;
+// include_once __DIR__.'/../modules/Pkg_CahierText/Routes/web.php';
+// use Illuminate\Support\Facades\Route;
 
 // Auth::routes();
 
@@ -8,3 +8,7 @@ use Illuminate\Support\Facades\Route;
 //     return view('auth.login');
 // })->middleware('guest');
 
+
+// Auth::routes();
+
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

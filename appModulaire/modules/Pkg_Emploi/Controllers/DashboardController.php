@@ -14,6 +14,12 @@ use Modules\Pkg_Emploi\Models\SeanceEmploi;
 
 class DashboardController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     public function index(Request $request)
     {
         // 1. Récupérer tous les groupes

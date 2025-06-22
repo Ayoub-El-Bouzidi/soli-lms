@@ -5,10 +5,7 @@ namespace Modules\Pkg_Emploi\Controllers;
 
 use Modules\Core\Controllers\Controller;
 use Illuminate\Http\Request;
-use Modules\Blog\Models\Article;
-use Modules\Blog\Models\Category;
-use Modules\Blog\Services\ArticleService;
-use Modules\Blog\Services\CategoryService;
+
 
 class HomeController extends Controller
 {
@@ -55,6 +52,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('Blog::home');
+        return view('Emploi::home');
     }
 }

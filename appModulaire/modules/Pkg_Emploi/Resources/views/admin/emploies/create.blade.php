@@ -86,7 +86,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="end-date">Date fin</label>
-                                <input type="date" class="form-control" id="end-date" value="2025-06-30">
+                                <input type="date" class="form-control" id="end-date" value="2024-07-01">
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -638,30 +638,26 @@
         return days[date.getDay()];
     }
 
-    const moduleNames = {
-        '1': 'M11 - Mathematics',
-        '2': 'M101 - Programming', 
-        '3': 'M12 - Physics',
-        '4': 'M102 - Database',
-        '5': 'M103 - Networks'
-    };
-    const formateurNames = {
-        '1': 'ES SERRAJ FOUAD',
-        '2': 'EL KHALLOUI FIRDAOUS',
-        '3': 'AHMED BENALI',
-        '4': 'FATIMA ZAHRA',
-        '5': 'OMAR ALAMI',
-        '6': 'HASSAN TAZI'
-    };
-    const salleNames = {
-        '1': 'SALLE01',
-        '2': 'SALLE02',
-        '3': 'SALLE03',
-        '4': 'SALLE04',
-        '5': 'SALLE05',
-        '6': 'LAB01',
-        '7': 'LAB02'
-    };
+    // Get data from Laravel controller
+    const modules = @json($modules);
+    const formateurs = @json($formateurs);
+    const salles = @json($salles);
+
+    // Create lookup objects for easy access
+    const moduleNames = {};
+    modules.forEach(module => {
+        moduleNames[module.id] = module.nom;
+    });
+
+    const formateurNames = {};
+    formateurs.forEach(formateur => {
+        formateurNames[formateur.id] = formateur.nom;
+    });
+
+    const salleNames = {};
+    salles.forEach(salle => {
+        salleNames[salle.id] = salle.nom;
+    });
 
     // Helper function to populate missing lesson data
     function populateLessonData(lessonData) {

@@ -3,7 +3,7 @@
 namespace Modules\Pkg_Emploi\Controllers;
 
 use Illuminate\Http\Request;
-use Modules\Core\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use Modules\Pkg_CahierText\Models\Formateur;
 use Modules\Pkg_CahierText\Models\Module;
 use Modules\Pkg_Emploi\Models\Emploi;
@@ -16,6 +16,12 @@ use Modules\Pkg_CahierText\Models\Groupe;
 
 class EmploiController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(){
         $emplois = Emploi::all();
         $modules = Module::all();
@@ -25,14 +31,7 @@ class EmploiController extends Controller
         return view('Emploi::admin.emploies.index',compact('modules', 'formateurs', 'salles','emplois'));
     }
 
-    // public function timetable(){
-    //     // Get data for the timetable interface
-    //     $modules = Module::all();
-    //     $formateurs = Formateur::all();
-    //     $salles = Salle::all();
-        
-    //     return view('Emploi::admin.timetable.index', compact('modules', 'formateurs', 'salles'));
-    // }
+   
 
     public function create(){
         $modules = Module::all();
@@ -47,103 +46,95 @@ class EmploiController extends Controller
      * Store the timetable data from FullCalendar
      */
     public function store(Request $request)
-    {
-        try {
-            // Validate the incoming data
-            $validator = Validator::make($request->all(), [
-                'emploie.date_debut' => 'required|date',
-                'emploie.date_fin' => 'required|date|after_or_equal:emploie.date_debut',
-                'emploie.groupe_id' => 'required|integer',
-                'seances' => 'required|array|min:1',
-                'seances.*.heur_debut' => 'required|string',
-                'seances.*.heur_fin' => 'required|string',
-                'seances.*.color' => 'required|string',
-                'seances.*.jours' => 'required|in:Lundi,Mardi,Mercredi,Jeudi,Vendredi',
-                'seances.*.module_id' => 'required|integer|exists:modules,id',
-                'seances.*.formateur_id' => 'required|integer|exists:formateurs,id',
-                'seances.*.salle_id' => 'required|integer|exists:salles,id',
-            ]);
+{
+    try {
+        // Validate the incoming data
+        $validator = Validator::make($request->all(), [
+            'emploie.date_debut' => 'required|date',
+            'emploie.date_fin' => 'required|date|after_or_equal:emploie.date_debut',
+            'emploie.groupe_id' => 'required|integer',
+            'seances' => 'required|array|min:1',
+            'seances.*.heur_debut' => 'required|string',
+            'seances.*.heur_fin' => 'required|string',
+            'seances.*.color' => 'required|string',
+            'seances.*.jours' => 'required|in:Lundi,Mardi,Mercredi,Jeudi,Vendredi',
+            'seances.*.module_id' => 'required|integer|exists:modules,id',
+            'seances.*.formateur_id' => 'required|integer|exists:formateurs,id',
+            'seances.*.salle_id' => 'required|integer|exists:salles,id',
+        ]);
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-
-            // Start database transaction
-            DB::beginTransaction();
-
-            // Create the main emploi record
-            $emploi = Emploi::create([
-                'date_debut' => $request->input('emploie.date_debut'),
-                'date_fin' => $request->input('emploie.date_fin'),
-                'groupe_id' => $request->input('emploie.groupe_id'),
-            ]);
-
-            // Create seance emploi records
-            $seances = $request->input('seances');
-            $createdSeances = [];
-
-            foreach ($seances as $seanceData) {
-                // Check for conflicts (optional)
-                // $conflict = $this->checkForConflicts($seanceData, $emploi->id);
-                // if ($conflict) {
-                //     throw new \Exception("Conflict detected: {$conflict}");
-                // }
-
-                $seance = SeanceEmploi::create([
-                    'heur_debut' => $seanceData['heur_debut'],
-                    'heur_fin' => $seanceData['heur_fin'],
-                    'jours' => $seanceData['jours'],
-                    'module_id' => $seanceData['module_id'],
-                    'formateur_id' => $seanceData['formateur_id'],
-                    'salle_id' => $seanceData['salle_id'],
-                    'color' => $seanceData['color'], // ADD THIS LINE
-                    'emploie_id' => $emploi->id,
-                ]);
-
-                $createdSeances[] = $seance;
-            }
-
-            // Commit the transaction
-            DB::commit();
-
-            // Log the successful creation
-            Log::info('Timetable created successfully', [
-                'emploi_id' => $emploi->id,
-                'groupe_id' => $emploi->groupe_id,
-                'seances_count' => count($createdSeances)
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Timetable saved successfully!',
-                'data' => [
-                    'emploi_id' => $emploi->id,
-                    'emploi' => $emploi,
-                    'seances_count' => count($createdSeances),
-                    'seances' => $createdSeances
-                ]
-            ], 201);
-
-        } catch (\Exception $e) {
-            // Rollback the transaction
-            DB::rollBack();
-
-            // Log the error
-            Log::error('Error creating timetable', [
-                'error' => $e->getMessage(),
-                'request_data' => $request->all()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Error saving timetable: ' . $e->getMessage()
-            ], 500);
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', 'Validation failed. Please check your input.');
         }
+
+        // Start database transaction
+        DB::beginTransaction();
+
+        // Create the main emploi record
+        $emploi = Emploi::create([
+            'date_debut' => $request->input('emploie.date_debut'),
+            'date_fin' => $request->input('emploie.date_fin'),
+            'groupe_id' => $request->input('emploie.groupe_id'),
+        ]);
+
+        // Create seance emploi records
+        $seances = $request->input('seances');
+        $createdSeances = [];
+
+        foreach ($seances as $seanceData) {
+            // Check for conflicts (optional)
+            // $conflict = $this->checkForConflicts($seanceData, $emploi->id);
+            // if ($conflict) {
+            //     throw new \Exception("Conflict detected: {$conflict}");
+            // }
+
+            $seance = SeanceEmploi::create([
+                'heur_debut' => $seanceData['heur_debut'],
+                'heur_fin' => $seanceData['heur_fin'],
+                'jours' => $seanceData['jours'],
+                'module_id' => $seanceData['module_id'],
+                'formateur_id' => $seanceData['formateur_id'],
+                'salle_id' => $seanceData['salle_id'],
+                'color' => $seanceData['color'],
+                'emploie_id' => $emploi->id,
+            ]);
+
+            $createdSeances[] = $seance;
+        }
+
+        // Commit the transaction
+        DB::commit();
+
+        // Log the successful creation
+        Log::info('Timetable created successfully', [
+            'emploi_id' => $emploi->id,
+            'groupe_id' => $emploi->groupe_id,
+            'seances_count' => count($createdSeances)
+        ]);
+
+        // Redirect to the index view with success message
+        return redirect()->route('emploie.index')
+            ->with('success', 'Emploi du temps créé avec succès! ' . count($createdSeances) . ' séances ajoutées.');
+
+    } catch (\Exception $e) {
+        // Rollback the transaction
+        DB::rollBack();
+
+        // Log the error
+        Log::error('Error creating timetable', [
+            'error' => $e->getMessage(),
+            'request_data' => $request->all()
+        ]);
+
+        // Redirect back with error message
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'Erreur lors de la sauvegarde: ' . $e->getMessage());
     }
+}
 
     /**
      * Check for scheduling conflicts
@@ -300,29 +291,27 @@ class EmploiController extends Controller
     }
 
     public function destroy($id){
-        try {
-            DB::beginTransaction();
+    try {
+        DB::beginTransaction();
 
-            $emploi = Emploi::findOrFail($id);
-            
-            // Delete related seances first
-            $emploi->seanceEmplois()->delete();
-            
-            // Delete the emploi
-            $emploi->delete();
+        $emploi = Emploi::findOrFail($id);
+        
 
-            DB::commit();
+        $emploi->seancesemploies()->delete();
+        
 
-            return redirect()->route('emploie.index')
-                           ->with('success', 'Timetable deleted successfully');
+        $emploi->delete();
+        DB::commit();
 
-        } catch (\Exception $e) {
-            DB::rollBack();
-            
-            return redirect()->route('emploie.index')
-                           ->with('error', 'Error deleting timetable: ' . $e->getMessage());
-        }
+        return redirect()->route('emploie.index')
+                         ->with('success', 'Timetable deleted successfully');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        dd($e->getMessage()); // STEP 3: Catch exact error message
     }
+}
+
 
     /**
      * Get timetable data for editing

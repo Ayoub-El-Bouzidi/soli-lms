@@ -338,36 +338,7 @@ return [
         ],
 
         // Academic Management
-        [
-            'text'    => 'Academic Management',
-            'icon'    => 'fas fa-graduation-cap',
-            'submenu' => [
-                [
-                    'text' => 'Classes',
-                    'url'  => 'classes',
-                    'icon' => 'fas fa-chalkboard',
-                    'active' => ['classes', 'classes/*'],
-                ],
-                [
-                    'text' => 'Subjects',
-                    'url'  => 'subjects',
-                    'icon' => 'fas fa-book',
-                    'active' => ['subjects', 'subjects/*'],
-                ],
-                [
-                    'text' => 'Academic Years',
-                    'url'  => 'academic-years',
-                    'icon' => 'fas fa-calendar-check',
-                    'active' => ['academic-years', 'academic-years/*'],
-                ],
-                [
-                    'text' => 'Semesters',
-                    'url'  => 'semesters',
-                    'icon' => 'fas fa-calendar-week',
-                    'active' => ['semesters', 'semesters/*'],
-                ],
-            ],
-        ],
+       
 
     ],
 
