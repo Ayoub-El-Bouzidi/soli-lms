@@ -11,25 +11,39 @@ use Modules\Pkg_Emploi\Models\Salle;
 class SeanceEmploi extends Model
 {
 
-    protected $fillable = ['heur_debut','heur_fin','module_id','formateur_id','salle_id','emploie_id'];
+    protected $fillable = [
+        'heur_debut',
+        'heur_fin', 
+        'jours',
+        'module_id',
+        'formateur_id',
+        'salle_id',
+        'color', 
+        'emploie_id'
+    ];  
 
-    protected $table = "seance_emploies";
+    protected $table = 'seance_emploies';
 
-    public function formateur(){
-        return $this->hasOne(Formateur::class);
+    public function module()
+    {
+        return $this->belongsTo(Module::class, 'module_id');
     }
 
-    public function module(){
-        return $this->hasOne(Module::class);
+    public function formateur()
+    {
+        return $this->belongsTo(Formateur::class, 'formateur_id');
     }
 
-    public function emploie(){
-        return $this->belongsTo(Emploi::class);
-    }
-    public function salle(){
-        return $this->hasOne(Salle::class,'article_tag');
+    public function salle()
+    {
+        return $this->belongsTo(Salle::class, 'salle_id');
     }
 
+    public function emploi()
+    {
+        return $this->belongsTo(Emploi::class, 'emploie_id');
+    }
+    
     public function seances(){
         return $this->hasMany(Seance::class);
     }

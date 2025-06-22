@@ -10,12 +10,13 @@ use Modules\Blog\Controllers\CommentController;
 use Modules\Blog\Controllers\TagController;
 use Modules\Blog\Controllers\HomeController;
 use App\Http\Controllers\UserController;
-
-
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::resource('/dashboard/emploie',EmploiController::class);
+Route::resource('/emploie',EmploiController::class);
+
+
 
 Auth::routes();
 

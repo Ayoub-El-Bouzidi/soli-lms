@@ -11,14 +11,14 @@ return new class extends Migration
      */
        public function up(): void
     {
-        Schema::create('emploies', function (Blueprint $table) {
-            $table->id();
-            // $table->string('statut')->default('active');
-            $table->date('date_debut');
-            $table->date('date_fin');
-            $table->foreignId('groupe_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
-        });
+            Schema::create('emploies', function (Blueprint $table) {
+                $table->id();
+                // $table->string('statut')->default('active');
+                $table->date('date_debut');
+                $table->date('date_fin');
+                $table->foreignId('groupe_id')->constrained()->onDelete('cascade');
+                $table->timestamps();
+            });
     }
 
     /**

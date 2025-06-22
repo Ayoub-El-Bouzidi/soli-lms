@@ -21,7 +21,7 @@ class Emploi extends Model
         return $this->belongsTo(Groupe::class, 'groupe_id');
     }
     public function seancesemploies(){
-        return $this->hasMany(SeanceEmploi::class);
+        return $this->hasMany(SeanceEmploi::class, 'emploie_id');
     }
     public function modules(){
         return $this->hasMany(Module::class);

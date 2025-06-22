@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->time('heur_debut');
             $table->time('heur_fin');
+            $table->string('color');
             $table->enum('jours', ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi']);
             $table->foreignId('module_id')->constrained()->onDelete('cascade');
             $table->foreignId('formateur_id')->constrained()->onDelete('cascade');

@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'Soli LMS',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -39,7 +39,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Here you can allow or not the use of external google fonts. Disabling the
-    | google fonts may be useful if your admin panel internet access is
+    | Google Fonts may be useful if your admin panel internet access is
     | restricted somehow.
     |
     | For detailed instructions you can look the google fonts section here:
@@ -65,10 +65,10 @@ return [
 
     'logo' => '<b>Soli</b>LMS',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3',
+    'logo_img_class' => 'brand-image', // Removed img-circle class
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'Admin Logo',
+    'logo_img_alt' => 'School Timetable Manager',
 
     /*
     |--------------------------------------------------------------------------
@@ -99,10 +99,7 @@ return [
     | Preloader Animation
     |--------------------------------------------------------------------------
     |
-    | Here you can change the preloader animation configuration. Currently, two
-    | modes are supported: 'fullscreen' for a fullscreen preloader animation
-    | and 'cwrapper' to attach the preloader animation into the content-wrapper
-    | element and avoid overlapping it with the sidebars and the top navbar.
+    | Here you can change the preloader animation configuration.
     |
     | For detailed instructions you can look the preloader section here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/Basic-Configuration
@@ -110,14 +107,13 @@ return [
     */
 
     'preloader' => [
-        'enabled' => true,
-        'mode' => 'fullscreen',
+        'enabled' => false, // Disabled to remove preloader
         'img' => [
             'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-            'alt' => 'AdminLTE Preloader Image',
-            'effect' => 'animation__shake',
-            'width' => 60,
-            'height' => 60,
+            'alt' => 'School Timetable Preloader Image',
+            // 'effect' => 'animation__shake',
+            // 'width' => 60,
+            // 'height' => 60,
         ],
     ],
 
@@ -264,27 +260,22 @@ return [
     'password_reset_url' => 'password/reset',
     'password_email_url' => 'password/email',
     'profile_url' => false,
-    'disable_darkmode_routes' => false,
 
     /*
     |--------------------------------------------------------------------------
-    | Laravel Asset Bundling
+    | Laravel Mix
     |--------------------------------------------------------------------------
     |
-    | Here we can enable the Laravel Asset Bundling option for the admin panel.
-    | Currently, the next modes are supported: 'mix', 'vite' and 'vite_js_only'.
-    | When using 'vite_js_only', it's expected that your CSS is imported using
-    | JavaScript. Typically, in your application's 'resources/js/app.js' file.
-    | If you are not using any of these, leave it as 'false'.
+    | Here we can enable the Laravel Mix option for the admin panel.
     |
-    | For detailed instructions you can look the asset bundling section here:
+    | For detailed instructions you can look the laravel mix section here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/Other-Configuration
     |
     */
 
-    'laravel_asset_bundling' => false,
-    'laravel_css_path' => 'css/app.css',
-    'laravel_js_path' => 'js/app.js',
+    'enabled_laravel_mix' => false,
+    'laravel_mix_css_path' => 'css/app.css',
+    'laravel_mix_js_path' => 'js/app.js',
 
     /*
     |--------------------------------------------------------------------------
@@ -293,7 +284,7 @@ return [
     |
     | Here we can modify the sidebar/top navigation of the admin panel.
     |
-    | For detailed instructions you can look here:
+    | For detailed instructions you can look the menu section here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/Menu-Configuration
     |
     */
@@ -301,69 +292,79 @@ return [
     'menu' => [
         // Navbar items:
         [
-            'type' => 'fullscreen-widget',
+            'type'         => 'navbar-search',
+            'text'         => 'search',
+            'topnav_right' => false,
+        ],
+        [
+            'type'         => 'fullscreen-widget',
             'topnav_right' => true,
         ],
 
         // Sidebar items:
         [
-            'text' => 'blog',
-            'url' => 'admin/blog',
-            'can' => 'manage-blog',
+            'type' => 'sidebar-menu-search',
+            'text' => 'search',
         ],
+        
+        // Dashboard
         [
             'text' => 'Dashboard',
-            'url' => '/',
+            'url'  => '/dashboard',
             'icon' => 'fas fa-tachometer-alt',
-            'label' => 4,
-            'label_color' => 'success',
+            'active' => ['home', 'dashboard'],
         ],
-        ['header' => 'account_settings'],
+
+        // Timetable Management
         [
-            'text' => 'profile',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
-        [
-            'text' => 'multilevel',
-            'icon' => 'fas fa-fw fa-share',
+            'text'    => 'Timetable Management',
+            'icon'    => 'fas fa-calendar-alt',
             'submenu' => [
                 [
-                    'text' => 'level_one',
-                    'url' => '#',
+                    'text' => 'View Timetables',
+                    'url'  => '/emploie',
+                    'icon' => 'fas fa-eye',
+                    'active' => ['timetables', 'timetables/*'],
                 ],
                 [
-                    'text' => 'level_one',
-                    'url' => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                        ],
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                            ],
-                        ],
-                    ],
+                    'text' => 'Create Timetable',
+                    'url'  => '/emploie/create',
+                    'icon' => 'fas fa-plus-circle',
+                    'active' => ['timetables/create'],
+                ],
+                
+               
+            ],
+        ],
+
+        // Academic Management
+        [
+            'text'    => 'Academic Management',
+            'icon'    => 'fas fa-graduation-cap',
+            'submenu' => [
+                [
+                    'text' => 'Classes',
+                    'url'  => 'classes',
+                    'icon' => 'fas fa-chalkboard',
+                    'active' => ['classes', 'classes/*'],
                 ],
                 [
-                    'text' => 'level_one',
-                    'url' => '#',
+                    'text' => 'Subjects',
+                    'url'  => 'subjects',
+                    'icon' => 'fas fa-book',
+                    'active' => ['subjects', 'subjects/*'],
+                ],
+                [
+                    'text' => 'Academic Years',
+                    'url'  => 'academic-years',
+                    'icon' => 'fas fa-calendar-check',
+                    'active' => ['academic-years', 'academic-years/*'],
+                ],
+                [
+                    'text' => 'Semesters',
+                    'url'  => 'semesters',
+                    'icon' => 'fas fa-calendar-week',
+                    'active' => ['semesters', 'semesters/*'],
                 ],
             ],
         ],
@@ -406,7 +407,7 @@ return [
 
     'plugins' => [
         'Datatables' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
@@ -426,7 +427,7 @@ return [
             ],
         ],
         'Select2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
@@ -441,7 +442,7 @@ return [
             ],
         ],
         'Chartjs' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
@@ -451,7 +452,7 @@ return [
             ],
         ],
         'Sweetalert2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
@@ -460,18 +461,34 @@ return [
                 ],
             ],
         ],
-        'Pace' => [
-            'active' => false,
+        // Pace plugin removed - this was providing the circle loader
+        'FullCalendar' => [
+            'active' => true,
             'files' => [
                 [
                     'type' => 'css',
                     'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/blue/pace-theme-center-radar.min.css',
+                    'location' => '//cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css',
                 ],
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js',
+                    'location' => '//cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js',
+                ],
+            ],
+        ],
+        'Toastr' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css',
                 ],
             ],
         ],
@@ -503,11 +520,7 @@ return [
             'scroll_right' => true,
             'fullscreen' => true,
         ],
-        'options' => [
-            'loading_screen' => 1000,
-            'auto_show_new_tab' => true,
-            'use_navbar_items' => true,
-        ],
+        
     ],
 
     /*
@@ -524,3 +537,5 @@ return [
 
     'livewire' => false,
 ];
+
+?>

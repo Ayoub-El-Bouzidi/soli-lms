@@ -26,30 +26,30 @@ class SeanceEmploieSeeder extends Seeder
 
         
 
-        $emploieId = 1;
+        $emploieId = 2;
 
         // Schedule data based on the image
         $schedule = [
             'Lundi' => [
-                ['heur_debut' => '09:00:00', 'heur_fin' => '10:00:00', 'module' => 'Soft Skills', 'formateur' => 'Firdaous'],
-                ['heur_debut' => '10:00:00', 'heur_fin' => '11:00:00', 'module' => 'Web Development', 'formateur' => 'Fatin'],
-                ['heur_debut' => '14:00:00', 'heur_fin' => '15:00:00', 'module' => 'Soft Skills', 'formateur' => 'Firdaous'],
+                ['heur_debut' => '09:00:00', 'heur_fin' => '10:00:00', 'module' => 'Soft Skills', 'formateur' => 'Firdaous', 'color' => '1'],
+                ['heur_debut' => '10:00:00', 'heur_fin' => '11:00:00', 'module' => 'Web Development', 'formateur' => 'Fatin', 'color' => '1'],
+                ['heur_debut' => '14:00:00', 'heur_fin' => '15:00:00', 'module' => 'Soft Skills', 'formateur' => 'Firdaous', 'color' => '1'],
             ],
             'Mardi' => [
-                ['heur_debut' => '09:00:00', 'heur_fin' => '10:00:00', 'module' => 'Web Development', 'formateur' => 'Fatin'],
-                ['heur_debut' => '14:00:00', 'heur_fin' => '15:00:00', 'module' => 'Web Development', 'formateur' => 'Fatin'],
+                ['heur_debut' => '09:00:00', 'heur_fin' => '10:00:00', 'module' => 'Web Development', 'formateur' => 'Fatin', 'color' => '1'],
+                ['heur_debut' => '14:00:00', 'heur_fin' => '15:00:00', 'module' => 'Web Development', 'formateur' => 'Fatin', 'color' => '1'],
             ],
             'Mercredi' => [
-                ['heur_debut' => '09:00:00', 'heur_fin' => '10:00:00', 'module' => 'Web Development', 'formateur' => 'Fatin'],
-                ['heur_debut' => '14:00:00', 'heur_fin' => '15:00:00', 'module' => 'Web Development', 'formateur' => 'Fatin'],
+                ['heur_debut' => '09:00:00', 'heur_fin' => '10:00:00', 'module' => 'Web Development', 'formateur' => 'Fatin', 'color' => '1'],
+                ['heur_debut' => '14:00:00', 'heur_fin' => '15:00:00', 'module' => 'Web Development', 'formateur' => 'Fatin', 'color' => '1'],
             ],
             'Jeudi' => [
-                ['heur_debut' => '09:00:00', 'heur_fin' => '10:00:00', 'module' => 'Web Development', 'formateur' => 'Fatin'],
-                ['heur_debut' => '14:00:00', 'heur_fin' => '15:00:00', 'module' => 'Web Development', 'formateur' => 'Fatin'],
+                ['heur_debut' => '09:00:00', 'heur_fin' => '10:00:00', 'module' => 'Web Development', 'formateur' => 'Fatin', 'color' => '1'],
+                ['heur_debut' => '14:00:00', 'heur_fin' => '15:00:00', 'module' => 'Web Development', 'formateur' => 'Fatin', 'color' => '1'],
             ],
             'Vendredi' => [
-                ['heur_debut' => '09:00:00', 'heur_fin' => '10:00:00', 'module' => 'English Communication', 'formateur' => 'Amin'],
-                ['heur_debut' => '14:00:00', 'heur_fin' => '15:00:00', 'module' => 'English Communication', 'formateur' => 'Amin'],
+                ['heur_debut' => '09:00:00', 'heur_fin' => '10:00:00', 'module' => 'English Communication', 'formateur' => 'Amin', 'color' => '1'],
+                ['heur_debut' => '14:00:00', 'heur_fin' => '15:00:00', 'module' => 'English Communication', 'formateur' => 'Amin', 'color' => '1'],
             ]
         ];
 
@@ -59,6 +59,7 @@ class SeanceEmploieSeeder extends Seeder
                 SeanceEmploi::create([
                     'heur_debut' => $session['heur_debut'],
                     'heur_fin' => $session['heur_fin'],
+                    'color' => $session['color'],
                     'jours' => $weekday,
                     'module_id' => $modules[$session['module']],
                     'formateur_id' => $formateurs[$session['formateur']],

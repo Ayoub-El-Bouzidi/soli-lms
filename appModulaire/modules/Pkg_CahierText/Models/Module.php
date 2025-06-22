@@ -14,10 +14,11 @@ class Module extends Model
     /**
      * Get the sessions for this module.
      */
-    public function seance_emploies()
+    public function seancesemploies()
     {
-        return $this->hasMany(SeanceEmploi::class);
+        return $this->hasMany(SeanceEmploi::class, 'module_id');
     }
+    
     public function groupes(){
         return $this->belongsToMany(Groupe::class, 'groupe_module', 'groupe_id', 'module_id');
     }

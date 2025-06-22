@@ -1,4 +1,14 @@
-@extends('Emploi::layouts.admin')
+@extends('adminlte::page')
+
+@section('title', 'Emploi creation')
+
+@section('header')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@stop
+
+@section('content_header')
+   
+@stop
 
 @section('content')
     <section class="content">
@@ -168,7 +178,7 @@
     </section>
 @endsection
 
-@section('scripts')
+@section('js')
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function () {

@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             ResponsableSeeder::class,
             FormateurSeeder::class,
             GroupeSeeder::class,
-            // FormateurSeeder::class,
+            FormateurSeeder::class,
             GroupeFormateurSeeder::class,
             ModuleSeeder::class,
             GroupeModuleSeeder::class,

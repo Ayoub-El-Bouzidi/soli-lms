@@ -2,9 +2,11 @@
 
 namespace Modules\Pkg_Emploi\Controllers;
 
-use DB;
+
+// use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Controllers\Controller;
 use Modules\Pkg_CahierText\Models\Groupe;
 use Modules\Pkg_Emploi\Models\Emploi;
@@ -109,5 +111,10 @@ class DashboardController extends Controller
             'modulesPieData'        => $statusCounts,
             'modulesProgression'    => $modulesProgression,
         ]);
+    }
+
+    public function groups(){
+        $groupes = Groupe::all();
+        
     }
 }
