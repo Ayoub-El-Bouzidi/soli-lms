@@ -133,6 +133,14 @@ class CahierEntryRepository
     {
         $module->heures_terminees += $hours;
         $module->heures_restees = max(0, $module->masse_horaire - $module->heures_terminees);
+
+        // Update etat_validation based on heures_restees
+        if ($module->heures_restees <= 0) {
+            $module->etat_validation = 'terminé';
+        } elseif ($module->etat_validation === 'terminé' && $module->heures_restees > 0) {
+            $module->etat_validation = 'en cours';
+        }
+
         $module->save();
     }
 
@@ -140,6 +148,14 @@ class CahierEntryRepository
     {
         $module->heures_terminees -= $hours;
         $module->heures_restees = $module->masse_horaire - $module->heures_terminees;
+
+        // Update etat_validation based on heures_restees
+        if ($module->heures_restees <= 0) {
+            $module->etat_validation = 'terminé';
+        } elseif ($module->etat_validation === 'terminé' && $module->heures_restees > 0) {
+            $module->etat_validation = 'en cours';
+        }
+
         $module->save();
     }
 

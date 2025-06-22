@@ -10,7 +10,7 @@
     {{-- Group Filter --}}
     <div class="card mb-4">
         <div class="card-body">
-            <form method="GET" action="{{ route('modules.index') }}" class="d-flex align-items-center">
+            <form method="GET" action="{{ route('seances.index') }}" class="d-flex align-items-center">
                 <div class="form-group mb-0 mr-3">
                     <label for="groupe_id" class="mr-2">Filtrer par groupe:</label>
                     <select name="groupe_id" id="groupe_id" class="form-control" onchange="this.form.submit()">
@@ -30,8 +30,7 @@
     <div class="card mb-4 d-none" id="createSeanceCard">
         <div class="card-header">Nouvelle séance</div>
         <div class="card-body">
-            <form method="POST" >
-                {{-- action="{{ route('seances.store') }}" --}}
+            <form method="POST" action="{{ route('cahier-de-texte.store') }}">
                 @csrf
 
                 <div class="mb-3">
@@ -59,7 +58,7 @@
         <thead>
             <tr>
                 <th>Module</th>
-                <th>Date</th>
+                <th>Jour</th>
                 <th>Heure</th>
                 <th>Durée</th>
                 <th>État</th>
@@ -67,22 +66,39 @@
             </tr>
         </thead>
         <tbody>
-        {{-- @foreach($seances as $seance)
+        @foreach($seances as $seance)
             <tr>
                 <td>{{ $seance->module->nom ?? '-' }}</td>
-                <td>{{ $seance->seanceEmploi->date ?? '-' }}</td>
-                <td>{{ $seance->seanceEmploi->heure_debut }} - {{ $seance->seanceEmploi->heure_fin }}</td>
-                <td>{{ $seance->seanceEmploi->duree }}h</td>
+                <td>{{ $seance->seance_emploi->jours ?? '-' }}</td>
                 <td>
-                    <span class="badge bg-{{ $seance->etat_validation == 'validé' ? 'success' : 'warning' }}">
-                        {{ ucfirst($seance->etat_validation) }}
+                    @if($seance->seance_emploi)
+                        {{ $seance->seance_emploi->heur_debut ?? '-' }} - {{ $seance->seance_emploi->heur_fin ?? '-' }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td>
+                    @if($seance->seance_emploi && $seance->seance_emploi->heur_debut && $seance->seance_emploi->heur_fin)
+                        @php
+                            $start = \Carbon\Carbon::parse($seance->seance_emploi->heur_debut);
+                            $end = \Carbon\Carbon::parse($seance->seance_emploi->heur_fin);
+                            $duration = $start->diffInHours($end) + ($start->diffInMinutes($end) % 60) / 60;
+                        @endphp
+                        {{ number_format($duration, 1) }}h
+                    @else
+                        -
+                    @endif
+                </td>
+                <td>
+                    <span class="badge bg-{{ $seance->status_class ?? 'warning' }}">
+                        {{ $seance->status ?? 'En cours' }}
                     </span>
                 </td>
                 <td>
-                    <a href="{{ route('seances.edit', $seance->id) }}" class="btn btn-primary btn-sm">Remplir</a>
+                    <a href="{{ route('cahier-de-texte.edit', $seance->id) }}" class="btn btn-primary btn-sm">Remplir</a>
                 </td>
             </tr>
-        @endforeach --}}
+        @endforeach
         </tbody>
     </table>
 </div>

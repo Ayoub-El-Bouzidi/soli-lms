@@ -19,16 +19,12 @@ class CahierEntryController extends Controller
         $this->repository = $repository;
     }
 
-    public function index(Request $request)
+    public function index()
     {
         if (auth('responsables')->check()) {
-            // Responsable: see all entries with optional group filter
-            if ($request->has('groupe_id') && $request->groupe_id) {
-                $entries = $this->repository->getEntriesByGroup($request->groupe_id);
-            } else {
-                $entries = $this->repository->getAllEntries();
-            }
-            $groupes = $this->repository->getAllGroups(); // All groups for filter dropdown
+            // Responsable: see all entries
+            $entries = $this->repository->getAllEntries();
+            $groupes = collect(); // Or fetch all groups if needed
         } else {
             // Formateur: see only their entries
             $formateur = auth('formateurs')->user();
@@ -38,12 +34,6 @@ class CahierEntryController extends Controller
             $entries = $this->repository->getEntriesByFormateur($userId);
             $groupes = $this->repository->getFormateurGroups($formateurId);
         }
-
-        // Get groups for each entry's formateur
-        foreach ($entries as $entry) {
-            $entry->formateur_groups = $this->repository->getUserGroups($entry->formateur_id);
-        }
-
         return view('Pkg_CahierText::cahier.index', compact('entries', 'groupes'));
     }
 
@@ -107,16 +97,15 @@ class CahierEntryController extends Controller
     {
         // Check which guard is active and get the appropriate modules
         if (auth('responsables')->check()) {
-            // Responsable: can see all modules (including the currently assigned one)
-            $modules = $this->repository->getAllModulesForEdit();
+            // Responsable: can see all modules
+            $modules = $this->repository->getAllModules();
         } else {
             // Formateur: can only see their assigned modules
-            $formateur = auth('formateurs')->user();
-            if ($formateur) {
-                $formateurId = auth('formateurs')->id(); // For getAvailableModules
+            $formateurId = auth('formateurs')->id();
+            if ($formateurId) {
                 $modules = $this->repository->getAvailableModules($formateurId);
             } else {
-                // Fallback: if no formateur found, show empty modules
+                // Fallback: if no formateur ID found, show empty modules
                 $modules = collect();
             }
         }
