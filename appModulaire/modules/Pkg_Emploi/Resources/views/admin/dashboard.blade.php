@@ -181,51 +181,51 @@
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // 1) Récupérer les données injectées par PHP
-        var modulesPieData = @json([
-            'Terminés'    => $modulesPieData['Terminés'] ?? 0,
-            'Non terminés' => $modulesPieData['Non terminés'] ?? 0
-        ]);
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1) Récupérer les données injectées par PHP
+            var modulesPieData = @json([
+                'Terminés'    => $modulesPieData['Terminés'] ?? 0,
+                'Non terminés' => $modulesPieData['Non terminés'] ?? 0
+            ]);
 
-        // 2) Extraire les labels et les valeurs
-        var pieLabels = Object.keys(modulesPieData);       // ["Terminés", "Non terminés"]
-        var pieValues = Object.values(modulesPieData);     // [countTerminés, countNonTerminés]
+            // 2) Extraire les labels et les valeurs
+            var pieLabels = Object.keys(modulesPieData);       // ["Terminés", "Non terminés"]
+            var pieValues = Object.values(modulesPieData);     // [countTerminés, countNonTerminés]
 
-        // 3) Couleurs : vert pour Terminés, rouge pour Non terminés
-        var pieColors = ['#00a65a', '#f56954'];
+            // 3) Couleurs : vert pour Terminés, rouge pour Non terminés
+            var pieColors = ['#00a65a', '#f56954'];
 
-        // 4) Initialiser le pie chart
-        var pieCtx = document.getElementById('pieChart').getContext('2d');
-        new Chart(pieCtx, {
-            type: 'pie',
-            data: {
-                labels: pieLabels,
-                datasets: [{
-                    data: pieValues,
-                    backgroundColor: pieColors
-                }]
-            },
-            options: {
-                maintainAspectRatio: false,
-                responsive: true,
-                plugins: {
-                    legend: { position: 'bottom' },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                var label = context.label || '';
-                                var value = context.parsed;
-                                var total = context.chart.data.datasets[0].data
-                                    .reduce(function(sum, v) { return sum + v; }, 0);
-                                var pct = total > 0 ? Math.round((value / total) * 100) : 0;
-                                return label + ': ' + value + ' (' + pct + '%)';
+            // 4) Initialiser le pie chart
+            var pieCtx = document.getElementById('pieChart').getContext('2d');
+            new Chart(pieCtx, {
+                type: 'pie',
+                data: {
+                    labels: pieLabels,
+                    datasets: [{
+                        data: pieValues,
+                        backgroundColor: pieColors
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    var label = context.label || '';
+                                    var value = context.parsed;
+                                    var total = context.chart.data.datasets[0].data
+                                        .reduce(function(sum, v) { return sum + v; }, 0);
+                                    var pct = total > 0 ? Math.round((value / total) * 100) : 0;
+                                    return label + ': ' + value + ' (' + pct + '%)';
+                                }
                             }
                         }
                     }
                 }
-            }
+            });
         });
-    });
     </script>
 @endsection
