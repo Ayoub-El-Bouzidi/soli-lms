@@ -19,12 +19,16 @@ class CahierEntryController extends Controller
         $this->repository = $repository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         if (auth('responsables')->check()) {
-            // Responsable: see all entries
-            $entries = $this->repository->getAllEntries();
-            $groupes = collect(); // Or fetch all groups if needed
+            $groupeId = $request->input('groupe_id');
+            if ($groupeId) {
+                $entries = $this->repository->getEntriesByGroup($groupeId);
+            } else {
+                $entries = $this->repository->getAllEntries();
+            }
+            $groupes = $this->repository->getAllGroups();
         } else {
             // Formateur: see only their entries
             $formateur = auth('formateurs')->user();

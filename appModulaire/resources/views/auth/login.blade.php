@@ -1,86 +1,115 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header justify-content-center d-flex">
-                    <img class="w-25 h-25 p-3" src="/appModulaire/resources/assets/AdminLTELogo.png" alt="">
-                </div>
+<style>
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f5f6fa;
+    }
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
+    .login-card {
+        width: 100%;
+        max-width: 400px;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        background-color: white;
+    }
 
-                        {{-- Role selection --}}
-                        <div class="row mb-3">
-                            <label for="role" class="col-md-4 col-form-label text-md-end">{{ __('Role') }}</label>
-                            <div class="col-md-6">
-                                <select id="role" class="form-control @error('role') is-invalid @enderror" name="role">
-                                    <option value="" {{ !old('role') ? 'selected' : '' }}>Select Role</option>
-                                    <option value="formateurs" {{ old('role') == 'formateurs' ? 'selected' : '' }}>Formateur</option>
-                                    <option value="responsables" {{ old('role') == 'responsables' ? 'selected' : '' }}>Responsable</option>
-                                </select>
-                                @error('role')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+    .login-image {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
 
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+    .login-image img {
+        height: 60px;
+    }
 
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+    .form-control,
+    .form-select,
+    .form-check-input {
+        border-radius: 8px;
+    }
 
-                        <div class="row mb-3">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+    .btn-primary {
+        background-color: #1e2a38;
+        border: none;
+        padding: 0.5rem 1.5rem;
+    }
 
-                        <div class="row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link d-none" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    .btn-primary:hover {
+        background-color: #141e28;
+    }
+
+    .forgot-link {
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-image">
+            <img src="{{ asset('assets/AdminLTELogo.png') }}" alt="Logo">
         </div>
+
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
+
+            {{-- Role --}}
+            <div class="mb-3">
+                <label for="role" class="form-label">Role</label>
+                <select id="role" class="form-select @error('role') is-invalid @enderror" name="role" required>
+                    <option value="" {{ !old('role') ? 'selected' : '' }}>Select Role</option>
+                    <option value="formateurs" {{ old('role') == 'formateurs' ? 'selected' : '' }}>Formateur</option>
+                    <option value="responsables" {{ old('role') == 'responsables' ? 'selected' : '' }}>Responsable</option>
+                </select>
+                @error('role')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            {{-- Email --}}
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input id="email" type="email"
+                       class="form-control @error('email') is-invalid @enderror"
+                       name="email" value="{{ old('email') }}" required autofocus>
+                @error('email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            {{-- Password --}}
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input id="password" type="password"
+                       class="form-control @error('password') is-invalid @enderror"
+                       name="password" required>
+                @error('password')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            {{-- Remember me --}}
+            <div class="mb-3 form-check">
+                <input class="form-check-input" type="checkbox" name="remember" id="remember"
+                       {{ old('remember') ? 'checked' : '' }}>
+                <label class="form-check-label" for="remember">
+                    Remember me
+                </label>
+            </div>
+
+            {{-- Submit + Forgot --}}
+            <div class="d-flex justify-content-between align-items-center">
+                <a class="forgot-link" href="{{ route('password.request') }}">Forgot your password?</a>
+                <button type="submit" class="btn btn-primary">LOG IN</button>
+            </div>
+        </form>
     </div>
 </div>
 @endsection
