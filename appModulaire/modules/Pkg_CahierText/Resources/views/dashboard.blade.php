@@ -3,6 +3,27 @@
 @section('title', 'Tableau de bord')
 
 @section('content_header')
+
+    {{-- Profile Info --}}
+    @php
+    $guard = session('auth.guard', 'web');
+    $user = Auth::guard($guard)->user();
+@endphp
+
+    @if($user)
+        <div class="alert alert-info d-flex justify-content-between align-items-center">
+            <div>
+                <strong>{{ $user->nom }} {{ $user->prenom }}</strong>
+            </div>
+            <form method="POST" action="{{ route('logout') }}" class="mb-0">
+                @csrf
+                <input type="hidden" name="role" value="{{ $guard }}">
+                <button type="submit" class="btn btn-sm btn-danger">Logout</button>
+            </form>
+        </div>
+    @else
+        <div class="alert alert-warning">Utilisateur non connecté</div>
+    @endif
     <div class="d-flex justify-content-between align-items-center">
         <h1>Tableau de bord</h1>
         <div class="d-flex align-items-center">
@@ -24,35 +45,6 @@
 @stop
 
 @section('content')
-
-    {{-- Profile Info --}}
-
-    {{-- Profile Info --}}
-    @php
-    $guard = session('auth.guard', 'web');
-    $user = Auth::guard($guard)->user();
-@endphp
-
-@if($user)
-    <li class="nav-item dropdown user-menu">
-        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-            <span class="d-none d-md-inline">{{ $user->nom }} {{ $user->prenom }}</span>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-            <li class="user-footer">
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <input type="hidden" name="role" value="{{ $guard }}">
-                    <button type="submit" class="btn btn-default btn-flat float-right">Logout</button>
-                </form>
-            </li>
-        </ul>
-    </li>
-@else
-    <li class="nav-item">
-        <span class="nav-link">Utilisateur non connecté</span>
-    </li>
-@endif
 
 
     <div class="row">
