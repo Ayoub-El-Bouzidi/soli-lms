@@ -78,7 +78,7 @@
                                     @endforeach
                                 </td>
                                 <td>
-                                    <div class="btn-group">
+                                    <div class="btn-group justify-content-between">
                                         <a href="{{ route('modules.show', $module) }}" class="btn btn-sm btn-info" title="Voir">
                                             <i class="fas fa-eye"></i>
                                         </a>
