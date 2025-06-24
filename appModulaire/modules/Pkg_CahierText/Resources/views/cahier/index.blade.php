@@ -99,8 +99,8 @@
                                                 <span class="badge badge-success">Terminé</span>
                                             @endif
                                         </td>
-                                        <td>
-                                            <a href="{{ route('cahier-de-texte.edit', $entry) }}" class="btn btn-sm btn-info">
+                                        <td class="text-center d-flex justify-content-between">
+                                            <a href="{{ route('cahier-de-texte.edit', $entry) }}" class="btn btn-sm btn-info mr-1">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <form action="{{ route('cahier-de-texte.destroy', $entry) }}" method="POST" class="d-inline">
